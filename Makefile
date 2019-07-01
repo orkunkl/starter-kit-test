@@ -6,7 +6,7 @@ export GO111MODULE := on
 # for building out the mycoind app
 BUILDOUT ?= mycoind
 BUILD_VERSION ?= $(shell git describe --tags)
-BUILD_FLAGS := -ldflags "-X github.com/iov-one/weave.Version=$(BUILD_VERSION)"
+BUILD_FLAGS := -mod=readonly -ldflags "-X github.com/iov-one/weave.Version=$(BUILD_VERSION)"
 
 # MODE=count records heat map in test coverage
 # MODE=set just records which lines were hit by one test
@@ -14,11 +14,11 @@ MODE ?= set
 
 # for dockerized prototool
 USER := $(shell id -u):$(shell id -g)
-DOCKER_BASE := docker run --rm --user $(USER) --mount type=bind,source="$(shell pwd)",target=/work --tmpfs /tmp:exec iov1/prototool:v0.2.0
+DOCKER_BASE := docker run --rm --user=${USER} -v $(shell pwd):/work iov1/prototool:v0.2.2
 PROTOTOOL := $(DOCKER_BASE) prototool
 PROTOC := $(DOCKER_BASE) protoc
 
-all: clean build test
+all: clean test install
 
 clean:
 	rm -f ${BUILDOUT}
@@ -30,12 +30,20 @@ install:
 	go install $(BUILD_FLAGS) ./cmd/mycoind
 
 test:
-	go vet ./...
-	go test -race ./...
+	go vet -mod=readonly ./...
+	go test -mod=readonly -race ./...
 
 # Test fast
 tf:
 	go test -short ./...
+
+# Test verbose
+tv:
+	go vet -mod=readonly ./...
+	go test -mod=readonly -v -race ./...
+
+mod:
+	go mod tidy
 
 cover:
 	go test -covermode=$(MODE) -coverprofile=coverage/coverage.txt ./...
@@ -47,7 +55,8 @@ protofmt:
 	$(PROTOTOOL) format -w
 
 protodocs:
+	# TODO: fix compilation steps and add back to protoc
 	./scripts/build_protodocs.sh docs/proto
 
-protoc: protolint protofmt protodocs
+protoc: protolint protofmt
 	$(PROTOTOOL) generate
