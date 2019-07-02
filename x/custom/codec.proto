@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package custom;
+
+import "github.com/iov-one/weave/codec.proto";
+import "gogoproto/gogo.proto";
+
+message CustomState {
+  weave.Metadata metadata = 1;
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  int64 custom_int = 3;
+  string custom_string = 4;
+  bytes custom_byte = 5;
+}
+
+message CreateCustomStateMsg {
+  weave.Metadata metadata = 1;
+  int64 custom_int = 2;
+  string custom_string = 3;
+  bytes custom_byte = 4;
+}
