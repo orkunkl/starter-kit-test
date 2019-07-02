@@ -1,0 +1,29 @@
+package custom
+
+import (
+	"github.com/iov-one/weave"
+	"github.com/iov-one/weave/errors"
+	"github.com/iov-one/weave/migration"
+)
+
+func init() {
+	migration.MustRegister(1, &CreateCustomStateMsg{}, migration.NoModification)
+}
+
+const (
+	pathCreateCustomStateMsg = "custom/create_custom_state"
+)
+
+var _ weave.Msg = (*CreateCustomStateMsg)(nil)
+
+func (CreateCustomStateMsg) Path() string {
+	return pathCreateCustomStateMsg
+}
+
+func (m CreateCustomStateMsg) Validate() error {
+	if err := m.Metadata.Validate(); err != nil {
+		return errors.Wrap(err, "metadata")
+	}
+	// TODO add custom validation for your state fields
+	return nil
+}
