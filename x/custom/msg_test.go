@@ -32,6 +32,15 @@ func TestValidateCreateCustomStateMsg(t *testing.T) {
 			},
 			wantErr: errors.ErrMetadata,
 		},
+		"bad address": {
+			msg: &CreateCustomStateMsg {
+				CustomInt: 1,
+				CustomString: "str",
+				CustomByte: []byte{0, 0, 0, 1},
+				CustomAddress: []byte{0, 0, 0, 2},
+			},
+			wantErr: errors.ErrMetadata,
+		},
 	}
 	for testName, tc := range cases {
 		t.Run(testName, func(t *testing.T) {

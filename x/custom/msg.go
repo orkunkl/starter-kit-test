@@ -24,6 +24,9 @@ func (m CreateCustomStateMsg) Validate() error {
 	if err := m.Metadata.Validate(); err != nil {
 		return errors.Wrap(err, "metadata")
 	}
+	if err := m.CustomAddress.Validate(); err != nil {
+		return errors.Wrap(err, "trader id")
+	}
 	// TODO add custom validation for your state fields
 	return nil
 }
