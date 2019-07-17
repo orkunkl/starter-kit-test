@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/gogo/protobuf v1.2.1
-	github.com/iov-one/weave v0.17.0
+	github.com/iov-one/weave v0.18.0
 	github.com/petar/GoLLRB v0.0.0-20130427215148-53be0d36a84c // indirect
 	github.com/smartystreets/assertions v0.0.0-20190401211740-f487f9de1cd3 // indirect
 	github.com/tendermint/btcd v0.1.1 // indirect
