@@ -21,12 +21,10 @@ func (CreateCustomStateMsg) Path() string {
 }
 
 func (m CreateCustomStateMsg) Validate() error {
-	if err := m.Metadata.Validate(); err != nil {
-		return errors.Wrap(err, "metadata")
-	}
-	if err := m.CustomAddress.Validate(); err != nil {
-		return errors.Wrap(err, "trader id")
-	}
+	var errs error
+
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "trader", m.CustomAddress.Validate())
 	// TODO add custom validation for your state fields
-	return nil
+	return errs 
 }
