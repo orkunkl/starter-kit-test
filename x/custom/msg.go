@@ -10,10 +10,6 @@ func init() {
 	migration.MustRegister(1, &CreateCustomStateMsg{}, migration.NoModification)
 }
 
-const (
-	pathCreateCustomStateMsg = "custom/create_custom_state"
-)
-
 var _ weave.Msg = (*CreateCustomStateMsg)(nil)
 
 func (CreateCustomStateMsg) Path() string {
