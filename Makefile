@@ -24,10 +24,10 @@ clean:
 	rm -f ${BUILDOUT}
 
 build:
-	go build $(BUILD_FLAGS) -o $(BUILDOUT) ./cmd/yourprojectd
+	go build $(BUILD_FLAGS) -o $(BUILDOUT) ./cmd/yourproject
 
 install:
-	go install $(BUILD_FLAGS) ./cmd/yourprojectd
+	go install $(BUILD_FLAGS) ./cmd/yourproject
 
 test:
 	go vet -mod=readonly ./...
