@@ -3,8 +3,8 @@
 # make sure we turn on go modules
 export GO111MODULE := on
 
-# for building out the mycoind app
-BUILDOUT ?= yourprojectd
+# for building out the yourproject app
+BUILDOUT ?= yourproject
 BUILD_VERSION ?= $(shell git describe --tags)
 BUILD_FLAGS := -mod=readonly -ldflags "-X github.com/iov-one/weave.Version=$(BUILD_VERSION)"
 
