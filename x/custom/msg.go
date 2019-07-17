@@ -17,7 +17,7 @@ const (
 var _ weave.Msg = (*CreateCustomStateMsg)(nil)
 
 func (CreateCustomStateMsg) Path() string {
-	return pathCreateCustomStateMsg
+	return "custom/create_custom_state"
 }
 
 func (m CreateCustomStateMsg) Validate() error {
