@@ -12,6 +12,16 @@ You will probably want to clone http://github.com/iov-one/weave and
 keep this in another folder in your IDE for reference. Or, maybe you
 find [godocs](http://godoc.org/github.com/iov-one/weave) more helpful.
 
+## Installing dependencies
+
+### Requirements
+
+- [golang 1.11.4+](https://golang.org/doc/install)
+- [tendermint](https://github.com/tendermint/tendermint/blob/master/docs/introduction/install.md)
+- [weave](https://github.com/iov-one/weave)
+  - `go get github.com/iov-one/weave`
+- [docker](https://docs.docker.com/install/)
+
 ## Running the demo app
 
 **TODO**
