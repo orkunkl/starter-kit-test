@@ -5,18 +5,54 @@ package custom;
 import "github.com/iov-one/weave/codec.proto";
 import "gogoproto/gogo.proto";
 
-message CustomState {
-  weave.Metadata metadata = 1;
-  bytes id = 2 [(gogoproto.customname) = "ID"];
-  int64 custom_int = 3;
-  string custom_string = 4;
-  bytes custom_byte = 5;
+enum InnerStateEnum {
+  INNER_STATE_ENUM_INVALID = 0 [(gogoproto.enumvalue_customname) = "Invalid"];
+  INNER_STATE_ENUM_CASE_1 = 1 [(gogoproto.enumvalue_customname) = "Case1"];
+  INNER_STATE_ENUM_CASE_2 = 2 [(gogoproto.enumvalue_customname) = "Case2"];
 }
 
-message CreateCustomStateMsg {
+message InnerState {
+  int64 st1 = 1;
+  int64 st2 = 2;
+}
+
+// This state demonstrates morm.Model
+message CustomStateWithID {
   weave.Metadata metadata = 1;
-  int64 custom_int = 2;
-  string custom_string = 3;
-  bytes custom_byte = 4;
-  bytes custom_address = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  InnerStateEnum inner_state_enum = 3;
+  InnerState inner_state = 4;
+  int64 custom_int = 5;
+  string custom_string = 6;
+  bytes custom_byte = 7;
+}
+
+// This state demonstrates orm.Model
+message CustomStateWithoutID {
+  weave.Metadata metadata = 1;
+  InnerStateEnum inner_state_enum = 2;
+  InnerState inner_state = 3;
+  int64 custom_int = 4;
+  string custom_string = 5;
+  bytes custom_byte = 6;
+}
+
+message CreateCustomStateWIDMsg {
+  weave.Metadata metadata = 1;
+  InnerStateEnum inner_state_enum = 2;
+  InnerState inner_state = 3;
+  int64 custom_int = 4;
+  string custom_string = 5;
+  bytes custom_byte = 6;
+  bytes custom_address = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+}
+
+message CreateCustomStateWOIDMsg {
+  weave.Metadata metadata = 1;
+  InnerStateEnum inner_state_enum = 2;
+  InnerState inner_state = 3;
+  int64 custom_int = 4;
+  string custom_string = 5;
+  bytes custom_byte = 6;
+  bytes custom_address = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
 }
