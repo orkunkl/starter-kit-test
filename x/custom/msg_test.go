@@ -14,7 +14,7 @@ func TestValidateCreateCustomStateMsg(t *testing.T) {
 		wantErr *errors.Error
 	}{
 		"success": {
-			msg: &CreateCustomStateMsg {
+			msg: &CreateCustomStateWIDMsg {
 				Metadata: &weave.Metadata{Schema: 1},
 				CustomInt: 1,
 				CustomString: "str",
@@ -24,7 +24,7 @@ func TestValidateCreateCustomStateMsg(t *testing.T) {
 			wantErr: nil,
 		},
 		"missing metadata": {
-			msg: &CreateCustomStateMsg {
+			msg: &CreateCustomStateWIDMsg {
 				CustomInt: 1,
 				CustomString: "str",
 				CustomByte: []byte{0, 0, 0, 1},
@@ -33,7 +33,7 @@ func TestValidateCreateCustomStateMsg(t *testing.T) {
 			wantErr: errors.ErrMetadata,
 		},
 		"bad address": {
-			msg: &CreateCustomStateMsg {
+			msg: &CreateCustomStateWIDMsg {
 				CustomInt: 1,
 				CustomString: "str",
 				CustomByte: []byte{0, 0, 0, 1},

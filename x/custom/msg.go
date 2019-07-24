@@ -7,16 +7,16 @@ import (
 )
 
 func init() {
-	migration.MustRegister(1, &CreateCustomStateMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateCustomStateWIDMsg{}, migration.NoModification)
 }
 
-var _ weave.Msg = (*CreateCustomStateMsg)(nil)
+var _ weave.Msg = (*CreateCustomStateWIDMsg)(nil)
 
-func (CreateCustomStateMsg) Path() string {
+func (CreateCustomStateWIDMsg) Path() string {
 	return "custom/create_custom_state"
 }
 
-func (m CreateCustomStateMsg) Validate() error {
+func (m CreateCustomStateWIDMsg) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
