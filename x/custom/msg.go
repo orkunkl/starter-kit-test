@@ -10,6 +10,7 @@ import (
 
 func init() {
 	migration.MustRegister(1, &CreateCustomStateMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateCustomStateIndexedMsg{}, migration.NoModification)
 }
 
 var _ weave.Msg = (*CreateCustomStateMsg)(nil)
@@ -23,6 +24,21 @@ func (m CreateCustomStateMsg) Validate() error {
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	errs = errors.AppendField(errs, "CustomString", customStringValidation(m.CustomString))
+	// TODO add custom validation for your state fields
+	return errs 
+}
+
+var _ weave.Msg = (*CreateCustomStateIndexedMsg)(nil)
+
+func (CreateCustomStateIndexedMsg) Path() string {
+	return "custom/create_custom_indexed_state"
+}
+
+func (m CreateCustomStateIndexedMsg) Validate() error {
+	var errs error
+
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "CustomAddress", m.CustomAddress.Validate())
 	// TODO add custom validation for your state fields
 	return errs 
 }
