@@ -13,21 +13,6 @@ func init() {
 	migration.MustRegister(1, &CreateCustomStateIndexedMsg{}, migration.NoModification)
 }
 
-var _ weave.Msg = (*CreateCustomStateMsg)(nil)
-
-func (CreateCustomStateMsg) Path() string {
-	return "custom/create_custom_state"
-}
-
-func (m CreateCustomStateMsg) Validate() error {
-	var errs error
-
-	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "CustomString", customStringValidation(m.CustomString))
-	// TODO add custom validation for your state fields
-	return errs 
-}
-
 var _ weave.Msg = (*CreateCustomStateIndexedMsg)(nil)
 
 func (CreateCustomStateIndexedMsg) Path() string {
@@ -38,9 +23,34 @@ func (m CreateCustomStateIndexedMsg) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "CustomAddress", m.CustomAddress.Validate())
+	errs = errors.AppendField(errs, "CustomString", customStringValidation(m.CustomString))
+	if m.CustomByte == nil {
+		errs = errors.Append(errs, errors.Field("CustomByte", errors.ErrEmpty, "missing custom byte"))
+	}
+	if m.InnerStateEnum != InnerStateEnum_CaseOne && m.InnerStateEnum != InnerStateEnum_CaseTwo {
+		errs = errors.Append(errs,
+			errors.Field("InnerStateEnum", errors.ErrState, "invalid inner state enum"))
+	}
 	// TODO add custom validation for your state fields
-	return errs 
+	return errs
+}
+
+var _ weave.Msg = (*CreateCustomStateMsg)(nil)
+
+func (CreateCustomStateMsg) Path() string {
+	return "custom/create_custom_state"
+}
+
+func (m CreateCustomStateMsg) Validate() error {
+	var errs error
+
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "CustomAddress", m.CustomAddress.Validate())
+	if m.InnerState == nil {
+		errs = errors.Append(errs, errors.Field("InnerState", errors.ErrEmpty, "missing inner state"))
+	}
+	// TODO add custom validation for your state fields
+	return errs
 }
 
 // validID returns an error if this is not an 8-byte ID
@@ -59,7 +69,7 @@ func customStringValidation(str string) error {
 	if len(str) == 0 {
 		return errors.Wrap(errors.ErrEmpty, "string missing")
 	}
-	if !strings.HasPrefix("cstm", str) {
+	if !strings.HasPrefix(str, "cstm") {
 		return errors.Wrap(errors.ErrInput, "string does not have cstm prefix")
 	}
 	return nil
