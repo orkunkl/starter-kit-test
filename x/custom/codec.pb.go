@@ -28,8 +28,8 @@ type InnerStateEnum int32
 
 const (
 	InnerStateEnum_Invalid InnerStateEnum = 0
-	InnerStateEnum_Case1   InnerStateEnum = 1
-	InnerStateEnum_Case2   InnerStateEnum = 2
+	InnerStateEnum_CaseOne InnerStateEnum = 1
+	InnerStateEnum_CaseTwo InnerStateEnum = 2
 )
 
 var InnerStateEnum_name = map[int32]string{
@@ -105,7 +105,7 @@ func (m *InnerState) GetSt2() int64 {
 }
 
 // Demonstrates morm.Model
-type CustomState struct {
+type CustomStateIndexed struct {
 	Metadata       *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	ID             []byte          `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 	InnerStateEnum InnerStateEnum  `protobuf:"varint,3,opt,name=inner_state_enum,json=innerStateEnum,proto3,enum=custom.InnerStateEnum" json:"inner_state_enum,omitempty"`
@@ -116,102 +116,11 @@ type CustomState struct {
 	DeletedAt github_com_iov_one_weave.UnixTime `protobuf:"varint,7,opt,name=deleted_at,json=deletedAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"deleted_at,omitempty"`
 }
 
-func (m *CustomState) Reset()         { *m = CustomState{} }
-func (m *CustomState) String() string { return proto.CompactTextString(m) }
-func (*CustomState) ProtoMessage()    {}
-func (*CustomState) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0271811e1b825e2d, []int{1}
-}
-func (m *CustomState) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *CustomState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CustomState.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *CustomState) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CustomState.Merge(m, src)
-}
-func (m *CustomState) XXX_Size() int {
-	return m.Size()
-}
-func (m *CustomState) XXX_DiscardUnknown() {
-	xxx_messageInfo_CustomState.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CustomState proto.InternalMessageInfo
-
-func (m *CustomState) GetMetadata() *weave.Metadata {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-func (m *CustomState) GetID() []byte {
-	if m != nil {
-		return m.ID
-	}
-	return nil
-}
-
-func (m *CustomState) GetInnerStateEnum() InnerStateEnum {
-	if m != nil {
-		return m.InnerStateEnum
-	}
-	return InnerStateEnum_Invalid
-}
-
-func (m *CustomState) GetCustomInt() int64 {
-	if m != nil {
-		return m.CustomInt
-	}
-	return 0
-}
-
-func (m *CustomState) GetCustomString() string {
-	if m != nil {
-		return m.CustomString
-	}
-	return ""
-}
-
-func (m *CustomState) GetCustomByte() []byte {
-	if m != nil {
-		return m.CustomByte
-	}
-	return nil
-}
-
-func (m *CustomState) GetDeletedAt() github_com_iov_one_weave.UnixTime {
-	if m != nil {
-		return m.DeletedAt
-	}
-	return 0
-}
-
-// Demonstrates orm.Model
-type CustomStateIndexed struct {
-	Metadata      *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	InnerState    *InnerState                      `protobuf:"bytes,2,opt,name=inner_state,json=innerState,proto3" json:"inner_state,omitempty"`
-	CustomAddress github_com_iov_one_weave.Address `protobuf:"bytes,3,opt,name=custom_address,json=customAddress,proto3,casttype=github.com/iov-one/weave.Address" json:"custom_address,omitempty"`
-	// Demonstrates timestamp in models
-	CreatedAt github_com_iov_one_weave.UnixTime `protobuf:"varint,4,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
-}
-
 func (m *CustomStateIndexed) Reset()         { *m = CustomStateIndexed{} }
 func (m *CustomStateIndexed) String() string { return proto.CompactTextString(m) }
 func (*CustomStateIndexed) ProtoMessage()    {}
 func (*CustomStateIndexed) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0271811e1b825e2d, []int{2}
+	return fileDescriptor_0271811e1b825e2d, []int{1}
 }
 func (m *CustomStateIndexed) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -247,40 +156,205 @@ func (m *CustomStateIndexed) GetMetadata() *weave.Metadata {
 	return nil
 }
 
-func (m *CustomStateIndexed) GetInnerState() *InnerState {
+func (m *CustomStateIndexed) GetID() []byte {
+	if m != nil {
+		return m.ID
+	}
+	return nil
+}
+
+func (m *CustomStateIndexed) GetInnerStateEnum() InnerStateEnum {
+	if m != nil {
+		return m.InnerStateEnum
+	}
+	return InnerStateEnum_Invalid
+}
+
+func (m *CustomStateIndexed) GetCustomInt() int64 {
+	if m != nil {
+		return m.CustomInt
+	}
+	return 0
+}
+
+func (m *CustomStateIndexed) GetCustomString() string {
+	if m != nil {
+		return m.CustomString
+	}
+	return ""
+}
+
+func (m *CustomStateIndexed) GetCustomByte() []byte {
+	if m != nil {
+		return m.CustomByte
+	}
+	return nil
+}
+
+func (m *CustomStateIndexed) GetDeletedAt() github_com_iov_one_weave.UnixTime {
+	if m != nil {
+		return m.DeletedAt
+	}
+	return 0
+}
+
+// Demonstrates orm.Model
+type CustomState struct {
+	Metadata      *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	InnerState    *InnerState                      `protobuf:"bytes,2,opt,name=inner_state,json=innerState,proto3" json:"inner_state,omitempty"`
+	CustomAddress github_com_iov_one_weave.Address `protobuf:"bytes,3,opt,name=custom_address,json=customAddress,proto3,casttype=github.com/iov-one/weave.Address" json:"custom_address,omitempty"`
+	// Demonstrates timestamp in models
+	CreatedAt github_com_iov_one_weave.UnixTime `protobuf:"varint,4,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
+}
+
+func (m *CustomState) Reset()         { *m = CustomState{} }
+func (m *CustomState) String() string { return proto.CompactTextString(m) }
+func (*CustomState) ProtoMessage()    {}
+func (*CustomState) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0271811e1b825e2d, []int{2}
+}
+func (m *CustomState) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustomState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustomState.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustomState) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustomState.Merge(m, src)
+}
+func (m *CustomState) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustomState) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustomState.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustomState proto.InternalMessageInfo
+
+func (m *CustomState) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *CustomState) GetInnerState() *InnerState {
 	if m != nil {
 		return m.InnerState
 	}
 	return nil
 }
 
-func (m *CustomStateIndexed) GetCustomAddress() github_com_iov_one_weave.Address {
+func (m *CustomState) GetCustomAddress() github_com_iov_one_weave.Address {
 	if m != nil {
 		return m.CustomAddress
 	}
 	return nil
 }
 
-func (m *CustomStateIndexed) GetCreatedAt() github_com_iov_one_weave.UnixTime {
+func (m *CustomState) GetCreatedAt() github_com_iov_one_weave.UnixTime {
 	if m != nil {
 		return m.CreatedAt
 	}
 	return 0
 }
 
+type CreateCustomStateIndexedMsg struct {
+	Metadata       *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	InnerStateEnum InnerStateEnum  `protobuf:"varint,2,opt,name=inner_state_enum,json=innerStateEnum,proto3,enum=custom.InnerStateEnum" json:"inner_state_enum,omitempty"`
+	CustomInt      int64           `protobuf:"varint,3,opt,name=custom_int,json=customInt,proto3" json:"custom_int,omitempty"`
+	CustomString   string          `protobuf:"bytes,4,opt,name=custom_string,json=customString,proto3" json:"custom_string,omitempty"`
+	CustomByte     []byte          `protobuf:"bytes,5,opt,name=custom_byte,json=customByte,proto3" json:"custom_byte,omitempty"`
+}
+
+func (m *CreateCustomStateIndexedMsg) Reset()         { *m = CreateCustomStateIndexedMsg{} }
+func (m *CreateCustomStateIndexedMsg) String() string { return proto.CompactTextString(m) }
+func (*CreateCustomStateIndexedMsg) ProtoMessage()    {}
+func (*CreateCustomStateIndexedMsg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0271811e1b825e2d, []int{3}
+}
+func (m *CreateCustomStateIndexedMsg) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CreateCustomStateIndexedMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CreateCustomStateIndexedMsg.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CreateCustomStateIndexedMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateCustomStateIndexedMsg.Merge(m, src)
+}
+func (m *CreateCustomStateIndexedMsg) XXX_Size() int {
+	return m.Size()
+}
+func (m *CreateCustomStateIndexedMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateCustomStateIndexedMsg.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateCustomStateIndexedMsg proto.InternalMessageInfo
+
+func (m *CreateCustomStateIndexedMsg) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *CreateCustomStateIndexedMsg) GetInnerStateEnum() InnerStateEnum {
+	if m != nil {
+		return m.InnerStateEnum
+	}
+	return InnerStateEnum_Invalid
+}
+
+func (m *CreateCustomStateIndexedMsg) GetCustomInt() int64 {
+	if m != nil {
+		return m.CustomInt
+	}
+	return 0
+}
+
+func (m *CreateCustomStateIndexedMsg) GetCustomString() string {
+	if m != nil {
+		return m.CustomString
+	}
+	return ""
+}
+
+func (m *CreateCustomStateIndexedMsg) GetCustomByte() []byte {
+	if m != nil {
+		return m.CustomByte
+	}
+	return nil
+}
+
 type CreateCustomStateMsg struct {
-	Metadata     *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	InnerState   *InnerState     `protobuf:"bytes,2,opt,name=inner_state,json=innerState,proto3" json:"inner_state,omitempty"`
-	CustomInt    int64           `protobuf:"varint,3,opt,name=custom_int,json=customInt,proto3" json:"custom_int,omitempty"`
-	CustomString string          `protobuf:"bytes,4,opt,name=custom_string,json=customString,proto3" json:"custom_string,omitempty"`
-	CustomByte   []byte          `protobuf:"bytes,5,opt,name=custom_byte,json=customByte,proto3" json:"custom_byte,omitempty"`
+	Metadata      *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	InnerState    *InnerState                      `protobuf:"bytes,2,opt,name=inner_state,json=innerState,proto3" json:"inner_state,omitempty"`
+	CustomAddress github_com_iov_one_weave.Address `protobuf:"bytes,3,opt,name=custom_address,json=customAddress,proto3,casttype=github.com/iov-one/weave.Address" json:"custom_address,omitempty"`
 }
 
 func (m *CreateCustomStateMsg) Reset()         { *m = CreateCustomStateMsg{} }
 func (m *CreateCustomStateMsg) String() string { return proto.CompactTextString(m) }
 func (*CreateCustomStateMsg) ProtoMessage()    {}
 func (*CreateCustomStateMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0271811e1b825e2d, []int{3}
+	return fileDescriptor_0271811e1b825e2d, []int{4}
 }
 func (m *CreateCustomStateMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -323,81 +397,7 @@ func (m *CreateCustomStateMsg) GetInnerState() *InnerState {
 	return nil
 }
 
-func (m *CreateCustomStateMsg) GetCustomInt() int64 {
-	if m != nil {
-		return m.CustomInt
-	}
-	return 0
-}
-
-func (m *CreateCustomStateMsg) GetCustomString() string {
-	if m != nil {
-		return m.CustomString
-	}
-	return ""
-}
-
-func (m *CreateCustomStateMsg) GetCustomByte() []byte {
-	if m != nil {
-		return m.CustomByte
-	}
-	return nil
-}
-
-type CreateCustomStateIndexedMsg struct {
-	Metadata      *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	InnerState    *InnerState                      `protobuf:"bytes,2,opt,name=inner_state,json=innerState,proto3" json:"inner_state,omitempty"`
-	CustomAddress github_com_iov_one_weave.Address `protobuf:"bytes,3,opt,name=custom_address,json=customAddress,proto3,casttype=github.com/iov-one/weave.Address" json:"custom_address,omitempty"`
-}
-
-func (m *CreateCustomStateIndexedMsg) Reset()         { *m = CreateCustomStateIndexedMsg{} }
-func (m *CreateCustomStateIndexedMsg) String() string { return proto.CompactTextString(m) }
-func (*CreateCustomStateIndexedMsg) ProtoMessage()    {}
-func (*CreateCustomStateIndexedMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0271811e1b825e2d, []int{4}
-}
-func (m *CreateCustomStateIndexedMsg) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *CreateCustomStateIndexedMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CreateCustomStateIndexedMsg.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *CreateCustomStateIndexedMsg) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateCustomStateIndexedMsg.Merge(m, src)
-}
-func (m *CreateCustomStateIndexedMsg) XXX_Size() int {
-	return m.Size()
-}
-func (m *CreateCustomStateIndexedMsg) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateCustomStateIndexedMsg.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CreateCustomStateIndexedMsg proto.InternalMessageInfo
-
-func (m *CreateCustomStateIndexedMsg) GetMetadata() *weave.Metadata {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-func (m *CreateCustomStateIndexedMsg) GetInnerState() *InnerState {
-	if m != nil {
-		return m.InnerState
-	}
-	return nil
-}
-
-func (m *CreateCustomStateIndexedMsg) GetCustomAddress() github_com_iov_one_weave.Address {
+func (m *CreateCustomStateMsg) GetCustomAddress() github_com_iov_one_weave.Address {
 	if m != nil {
 		return m.CustomAddress
 	}
@@ -407,51 +407,51 @@ func (m *CreateCustomStateIndexedMsg) GetCustomAddress() github_com_iov_one_weav
 func init() {
 	proto.RegisterEnum("custom.InnerStateEnum", InnerStateEnum_name, InnerStateEnum_value)
 	proto.RegisterType((*InnerState)(nil), "custom.InnerState")
-	proto.RegisterType((*CustomState)(nil), "custom.CustomState")
 	proto.RegisterType((*CustomStateIndexed)(nil), "custom.CustomStateIndexed")
-	proto.RegisterType((*CreateCustomStateMsg)(nil), "custom.CreateCustomStateMsg")
+	proto.RegisterType((*CustomState)(nil), "custom.CustomState")
 	proto.RegisterType((*CreateCustomStateIndexedMsg)(nil), "custom.CreateCustomStateIndexedMsg")
+	proto.RegisterType((*CreateCustomStateMsg)(nil), "custom.CreateCustomStateMsg")
 }
 
 func init() { proto.RegisterFile("x/custom/codec.proto", fileDescriptor_0271811e1b825e2d) }
 
 var fileDescriptor_0271811e1b825e2d = []byte{
 	// 559 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0x4f, 0x8f, 0xd2, 0x40,
-	0x18, 0xc6, 0x69, 0xf9, 0xb3, 0xf2, 0x16, 0x91, 0x4c, 0xc8, 0xda, 0x60, 0x2c, 0x15, 0x57, 0x83,
-	0x1a, 0x8b, 0x74, 0xbf, 0x80, 0xe5, 0xcf, 0xa1, 0x51, 0x38, 0x14, 0xd6, 0x6b, 0x53, 0xda, 0x09,
-	0x4e, 0xb2, 0x9d, 0x1a, 0x3a, 0x20, 0xfb, 0x11, 0x5c, 0x2f, 0x7e, 0x81, 0xfd, 0x2c, 0x5e, 0x3d,
-	0x78, 0xd8, 0xa3, 0x17, 0x89, 0x81, 0x6f, 0xb1, 0x27, 0xd3, 0x76, 0x14, 0x90, 0x90, 0xcd, 0x26,
-	0x66, 0x6f, 0x33, 0x0f, 0xcf, 0x3b, 0xf3, 0x3e, 0xbf, 0x79, 0x29, 0x94, 0xe7, 0x0d, 0x77, 0x1a,
-	0xb2, 0xc0, 0x6f, 0xb8, 0x81, 0x87, 0x5d, 0xed, 0xc3, 0x24, 0x60, 0x01, 0xca, 0x25, 0x5a, 0xe5,
-	0x68, 0x4c, 0xd8, 0xfb, 0xe9, 0x48, 0x73, 0x03, 0xbf, 0x41, 0x82, 0xd9, 0xcb, 0x80, 0xe2, 0xc6,
-	0x47, 0xec, 0xcc, 0xf0, 0xa6, 0xbb, 0x52, 0x1e, 0x07, 0xe3, 0x20, 0x5e, 0x36, 0xa2, 0x55, 0xa2,
-	0xd6, 0x5e, 0x01, 0x98, 0x94, 0xe2, 0xc9, 0x80, 0x39, 0x0c, 0xa3, 0x12, 0xa4, 0x43, 0xd6, 0x94,
-	0x05, 0x55, 0xa8, 0xa7, 0xad, 0x68, 0x99, 0x28, 0xba, 0x2c, 0xfe, 0x51, 0xf4, 0xda, 0x57, 0x11,
-	0xa4, 0x76, 0x7c, 0x71, 0x52, 0xf3, 0x02, 0xee, 0xf8, 0x98, 0x39, 0x9e, 0xc3, 0x9c, 0xb8, 0x50,
-	0xd2, 0xef, 0x69, 0xf1, 0xed, 0x5a, 0x8f, 0xcb, 0xd6, 0x5f, 0x03, 0x3a, 0x04, 0x91, 0x78, 0xf1,
-	0x69, 0x85, 0x56, 0x6e, 0xb9, 0xa8, 0x8a, 0x66, 0xc7, 0x12, 0x89, 0x87, 0x5e, 0x43, 0x89, 0x44,
-	0x6d, 0xd8, 0x61, 0x74, 0xa6, 0x8d, 0xe9, 0xd4, 0x97, 0xd3, 0xaa, 0x50, 0x2f, 0xea, 0x87, 0x5a,
-	0x92, 0x52, 0x5b, 0xb7, 0xd9, 0xa5, 0x53, 0xdf, 0x2a, 0x92, 0xad, 0x3d, 0x7a, 0x08, 0x90, 0x18,
-	0x6d, 0x42, 0x99, 0x9c, 0x89, 0xfb, 0xcd, 0x27, 0x8a, 0x49, 0x19, 0x7a, 0x0c, 0x77, 0xf9, 0xcf,
-	0x21, 0x9b, 0x10, 0x3a, 0x96, 0xb3, 0xaa, 0x50, 0xcf, 0x5b, 0x05, 0x97, 0x27, 0x89, 0x34, 0x54,
-	0x05, 0x89, 0x9b, 0x46, 0x67, 0x0c, 0xcb, 0xb9, 0xa8, 0x4d, 0x8b, 0x1f, 0xdb, 0x3a, 0x63, 0x18,
-	0x75, 0x00, 0x3c, 0x7c, 0x8a, 0x19, 0xf6, 0x6c, 0x87, 0xc9, 0x07, 0xd1, 0x25, 0xad, 0x27, 0x57,
-	0x8b, 0xea, 0xa3, 0x7d, 0x2f, 0xa0, 0x9d, 0x50, 0x32, 0x1f, 0x12, 0x1f, 0x5b, 0x79, 0x5e, 0x68,
-	0xb0, 0xda, 0x27, 0x11, 0xd0, 0x06, 0x41, 0x93, 0x7a, 0x78, 0x8e, 0xbd, 0x9b, 0x81, 0x3c, 0x06,
-	0x69, 0x03, 0x58, 0x4c, 0x54, 0xd2, 0xd1, 0x2e, 0x2b, 0x0b, 0xd6, 0x9c, 0xd0, 0x1b, 0x28, 0xf2,
-	0x7c, 0x8e, 0xe7, 0x4d, 0x70, 0x18, 0xc6, 0x8c, 0x0b, 0xad, 0xa3, 0xab, 0x45, 0x55, 0xdd, 0x1b,
-	0xc1, 0x48, 0xbc, 0x16, 0x07, 0xc8, 0xb7, 0x11, 0x0b, 0x77, 0x82, 0x1d, 0xce, 0x22, 0x73, 0x23,
-	0x16, 0xbc, 0xd0, 0x60, 0xb5, 0x9f, 0x02, 0x94, 0xdb, 0xf1, 0x6e, 0x83, 0x48, 0x2f, 0x1c, 0xdf,
-	0x02, 0x8d, 0xed, 0x89, 0x49, 0x5f, 0x3b, 0x31, 0x99, 0xeb, 0x27, 0x26, 0xfb, 0xef, 0xc4, 0xd4,
-	0xbe, 0x0b, 0xf0, 0x60, 0x27, 0x1f, 0x7f, 0xf1, 0xdb, 0x89, 0xf9, 0x3f, 0x1f, 0xfd, 0xf9, 0x67,
-	0x01, 0x8a, 0xdb, 0x7f, 0x44, 0xf4, 0x0c, 0x64, 0xb3, 0xdf, 0xef, 0x5a, 0xf6, 0x60, 0x68, 0x0c,
-	0xbb, 0x76, 0xb7, 0x7f, 0xd2, 0xb3, 0xcd, 0xfe, 0x3b, 0xe3, 0xad, 0xd9, 0x29, 0xa5, 0x2a, 0xd2,
-	0xf9, 0x85, 0x7a, 0x60, 0xd2, 0x99, 0x73, 0x4a, 0x3c, 0xf4, 0x14, 0xee, 0xef, 0x58, 0xdb, 0xc6,
-	0xa0, 0x6b, 0x37, 0x4b, 0x42, 0x25, 0x7f, 0x7e, 0xa1, 0x66, 0xdb, 0x4e, 0x88, 0x9b, 0xfb, 0x7d,
-	0x7a, 0x49, 0x5c, 0xfb, 0xf4, 0x96, 0xfc, 0x6d, 0xa9, 0x08, 0x97, 0x4b, 0x45, 0xf8, 0xb5, 0x54,
-	0x84, 0x2f, 0x2b, 0x25, 0x75, 0xb9, 0x52, 0x52, 0x3f, 0x56, 0x4a, 0x6a, 0x94, 0x8b, 0xbf, 0x6e,
-	0xc7, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x11, 0x80, 0x8b, 0xa6, 0x39, 0x05, 0x00, 0x00,
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x94, 0x4f, 0x8f, 0xd2, 0x40,
+	0x18, 0xc6, 0x69, 0x61, 0x59, 0x79, 0x8b, 0x48, 0x26, 0x64, 0x6d, 0x30, 0x16, 0xc4, 0x35, 0x41,
+	0x8d, 0xc5, 0xed, 0x7e, 0x01, 0xcb, 0x9f, 0x43, 0xa3, 0x60, 0x52, 0x58, 0xaf, 0x4d, 0x69, 0x27,
+	0x38, 0xc9, 0x76, 0x6a, 0xe8, 0xc0, 0xb2, 0x57, 0x8f, 0x5e, 0xf4, 0x0b, 0xf8, 0x71, 0x34, 0x1e,
+	0xf7, 0xe8, 0x89, 0x18, 0xf8, 0x04, 0x5e, 0xf7, 0x64, 0x3a, 0x1d, 0x85, 0x15, 0xc9, 0x86, 0x78,
+	0xd8, 0xdb, 0xcc, 0xc3, 0xf3, 0xbe, 0xf3, 0xbe, 0x3f, 0x9e, 0x14, 0x4a, 0xb3, 0x86, 0x37, 0x89,
+	0x58, 0x18, 0x34, 0xbc, 0xd0, 0xc7, 0x9e, 0xfe, 0x6e, 0x1c, 0xb2, 0x10, 0x65, 0x13, 0xad, 0x7c,
+	0x38, 0x22, 0xec, 0xed, 0x64, 0xa8, 0x7b, 0x61, 0xd0, 0x20, 0xe1, 0xf4, 0x59, 0x48, 0x71, 0xe3,
+	0x0c, 0xbb, 0x53, 0xbc, 0xee, 0x2e, 0x97, 0x46, 0xe1, 0x28, 0xe4, 0xc7, 0x46, 0x7c, 0x4a, 0xd4,
+	0xda, 0x73, 0x00, 0x8b, 0x52, 0x3c, 0xee, 0x33, 0x97, 0x61, 0x54, 0x84, 0x74, 0xc4, 0x8e, 0x54,
+	0xa9, 0x2a, 0xd5, 0xd3, 0x76, 0x7c, 0x4c, 0x14, 0x43, 0x95, 0x7f, 0x2b, 0x46, 0xed, 0xab, 0x0c,
+	0xa8, 0xc5, 0x1f, 0xe6, 0x35, 0x16, 0xf5, 0xf1, 0x0c, 0xfb, 0xe8, 0x29, 0xdc, 0x0a, 0x30, 0x73,
+	0x7d, 0x97, 0xb9, 0xbc, 0x5e, 0x31, 0xee, 0xe8, 0x7c, 0x08, 0xbd, 0x2b, 0x64, 0xfb, 0x8f, 0x01,
+	0x1d, 0x80, 0x4c, 0x7c, 0xde, 0x34, 0xdf, 0xcc, 0x2e, 0xe6, 0x15, 0xd9, 0x6a, 0xdb, 0x32, 0xf1,
+	0xd1, 0x0b, 0x28, 0x92, 0x78, 0x1a, 0x27, 0x8a, 0x5b, 0x3b, 0x98, 0x4e, 0x02, 0x35, 0x5d, 0x95,
+	0xea, 0x05, 0xe3, 0x40, 0x4f, 0x96, 0xd5, 0x57, 0xd3, 0x76, 0xe8, 0x24, 0xb0, 0x0b, 0xe4, 0xca,
+	0x1d, 0xdd, 0x07, 0x48, 0x8c, 0x0e, 0xa1, 0x4c, 0xcd, 0xf0, 0xb1, 0x73, 0x89, 0x62, 0x51, 0x86,
+	0x1e, 0xc2, 0x6d, 0xf1, 0x73, 0xc4, 0xc6, 0x84, 0x8e, 0xd4, 0xbd, 0xaa, 0x54, 0xcf, 0xd9, 0x79,
+	0x4f, 0x2c, 0x14, 0x6b, 0xa8, 0x02, 0x8a, 0x30, 0x0d, 0xcf, 0x19, 0x56, 0xb3, 0xf1, 0x98, 0xb6,
+	0x68, 0xdb, 0x3c, 0x67, 0x18, 0xb5, 0x01, 0x7c, 0x7c, 0x8a, 0x19, 0xf6, 0x1d, 0x97, 0xa9, 0xfb,
+	0xf1, 0x23, 0xcd, 0x47, 0x97, 0xf3, 0xca, 0x83, 0x6d, 0x7f, 0x84, 0x7e, 0x42, 0xc9, 0x6c, 0x40,
+	0x02, 0x6c, 0xe7, 0x44, 0xa1, 0xc9, 0x6a, 0xef, 0x65, 0x50, 0xd6, 0x40, 0xee, 0x46, 0xf0, 0x18,
+	0x94, 0x35, 0x52, 0x1c, 0xa5, 0x62, 0xa0, 0x4d, 0x48, 0x36, 0xac, 0x00, 0xa1, 0x97, 0x50, 0x10,
+	0x8b, 0xb9, 0xbe, 0x3f, 0xc6, 0x51, 0xc4, 0xe1, 0xe6, 0x9b, 0x87, 0x97, 0xf3, 0x4a, 0x75, 0xeb,
+	0xec, 0x66, 0xe2, 0xb5, 0x05, 0x39, 0x71, 0x8d, 0x21, 0x78, 0x63, 0xec, 0x0a, 0x08, 0x99, 0x9d,
+	0x20, 0x88, 0x42, 0x93, 0xd5, 0x7e, 0x4a, 0x70, 0xaf, 0xc5, 0x6f, 0x9b, 0x99, 0xea, 0x46, 0xa3,
+	0xdd, 0xa0, 0xfc, 0x2b, 0x3e, 0xf2, 0x7f, 0xc4, 0x27, 0x7d, 0x6d, 0x7c, 0x32, 0xd7, 0xc7, 0x67,
+	0xef, 0xef, 0xf8, 0xd4, 0xbe, 0x48, 0x50, 0xda, 0xd8, 0x79, 0xe7, 0x65, 0x6f, 0x3c, 0x01, 0x4f,
+	0x3e, 0x4a, 0x50, 0xb8, 0xca, 0x13, 0x3d, 0x06, 0xd5, 0xea, 0xf5, 0x3a, 0xb6, 0xd3, 0x1f, 0x98,
+	0x83, 0x8e, 0xd3, 0xe9, 0x9d, 0x74, 0x1d, 0xab, 0xf7, 0xc6, 0x7c, 0x65, 0xb5, 0x8b, 0xa9, 0xb2,
+	0xf2, 0xe1, 0x73, 0x75, 0xdf, 0xa2, 0x53, 0xf7, 0x94, 0xf8, 0xa8, 0x0e, 0x77, 0x37, 0xac, 0x2d,
+	0xb3, 0xdf, 0x71, 0x8e, 0x8a, 0x52, 0xe2, 0x6c, 0xb9, 0x11, 0x7e, 0x4d, 0xf1, 0x76, 0xa7, 0x51,
+	0x94, 0x57, 0xce, 0xc1, 0x59, 0xd8, 0x54, 0xbf, 0x2d, 0x34, 0xe9, 0x62, 0xa1, 0x49, 0x3f, 0x16,
+	0x9a, 0xf4, 0x69, 0xa9, 0xa5, 0x2e, 0x96, 0x5a, 0xea, 0xfb, 0x52, 0x4b, 0x0d, 0xb3, 0xfc, 0x73,
+	0x77, 0xfc, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x87, 0xaa, 0xe3, 0x2e, 0x4a, 0x05, 0x00, 0x00,
 }
 
 func (m *InnerState) Marshal() (dAtA []byte, err error) {
@@ -482,7 +482,7 @@ func (m *InnerState) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CustomState) Marshal() (dAtA []byte, err error) {
+func (m *CustomStateIndexed) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -492,7 +492,7 @@ func (m *CustomState) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CustomState) MarshalTo(dAtA []byte) (int, error) {
+func (m *CustomStateIndexed) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -543,7 +543,7 @@ func (m *CustomState) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CustomStateIndexed) Marshal() (dAtA []byte, err error) {
+func (m *CustomState) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -553,7 +553,7 @@ func (m *CustomStateIndexed) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CustomStateIndexed) MarshalTo(dAtA []byte) (int, error) {
+func (m *CustomState) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -592,7 +592,7 @@ func (m *CustomStateIndexed) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateCustomStateMsg) Marshal() (dAtA []byte, err error) {
+func (m *CreateCustomStateIndexedMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -602,7 +602,7 @@ func (m *CreateCustomStateMsg) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateCustomStateMsg) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateCustomStateIndexedMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -617,15 +617,10 @@ func (m *CreateCustomStateMsg) MarshalTo(dAtA []byte) (int, error) {
 		}
 		i += n4
 	}
-	if m.InnerState != nil {
-		dAtA[i] = 0x12
+	if m.InnerStateEnum != 0 {
+		dAtA[i] = 0x10
 		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.InnerState.Size()))
-		n5, err := m.InnerState.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n5
+		i = encodeVarintCodec(dAtA, i, uint64(m.InnerStateEnum))
 	}
 	if m.CustomInt != 0 {
 		dAtA[i] = 0x18
@@ -647,7 +642,7 @@ func (m *CreateCustomStateMsg) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateCustomStateIndexedMsg) Marshal() (dAtA []byte, err error) {
+func (m *CreateCustomStateMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -657,7 +652,7 @@ func (m *CreateCustomStateIndexedMsg) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateCustomStateIndexedMsg) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateCustomStateMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -666,21 +661,21 @@ func (m *CreateCustomStateIndexedMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n6, err := m.Metadata.MarshalTo(dAtA[i:])
+		n5, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n6
+		i += n5
 	}
 	if m.InnerState != nil {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.InnerState.Size()))
-		n7, err := m.InnerState.MarshalTo(dAtA[i:])
+		n6, err := m.InnerState.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n7
+		i += n6
 	}
 	if len(m.CustomAddress) > 0 {
 		dAtA[i] = 0x1a
@@ -715,7 +710,7 @@ func (m *InnerState) Size() (n int) {
 	return n
 }
 
-func (m *CustomState) Size() (n int) {
+func (m *CustomStateIndexed) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -749,7 +744,7 @@ func (m *CustomState) Size() (n int) {
 	return n
 }
 
-func (m *CustomStateIndexed) Size() (n int) {
+func (m *CustomState) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -773,7 +768,7 @@ func (m *CustomStateIndexed) Size() (n int) {
 	return n
 }
 
-func (m *CreateCustomStateMsg) Size() (n int) {
+func (m *CreateCustomStateIndexedMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -783,9 +778,8 @@ func (m *CreateCustomStateMsg) Size() (n int) {
 		l = m.Metadata.Size()
 		n += 1 + l + sovCodec(uint64(l))
 	}
-	if m.InnerState != nil {
-		l = m.InnerState.Size()
-		n += 1 + l + sovCodec(uint64(l))
+	if m.InnerStateEnum != 0 {
+		n += 1 + sovCodec(uint64(m.InnerStateEnum))
 	}
 	if m.CustomInt != 0 {
 		n += 1 + sovCodec(uint64(m.CustomInt))
@@ -801,7 +795,7 @@ func (m *CreateCustomStateMsg) Size() (n int) {
 	return n
 }
 
-func (m *CreateCustomStateIndexedMsg) Size() (n int) {
+func (m *CreateCustomStateMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -926,7 +920,7 @@ func (m *InnerState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CustomState) Unmarshal(dAtA []byte) error {
+func (m *CustomStateIndexed) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -949,10 +943,10 @@ func (m *CustomState) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CustomState: wiretype end group for non-group")
+			return fmt.Errorf("proto: CustomStateIndexed: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CustomState: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CustomStateIndexed: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1172,7 +1166,7 @@ func (m *CustomState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CustomStateIndexed) Unmarshal(dAtA []byte) error {
+func (m *CustomState) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1195,10 +1189,10 @@ func (m *CustomStateIndexed) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CustomStateIndexed: wiretype end group for non-group")
+			return fmt.Errorf("proto: CustomState: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CustomStateIndexed: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CustomState: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1350,7 +1344,7 @@ func (m *CustomStateIndexed) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateCustomStateMsg) Unmarshal(dAtA []byte) error {
+func (m *CreateCustomStateIndexedMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1373,10 +1367,10 @@ func (m *CreateCustomStateMsg) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateCustomStateMsg: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateCustomStateIndexedMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateCustomStateMsg: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateCustomStateIndexedMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1416,10 +1410,10 @@ func (m *CreateCustomStateMsg) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InnerState", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InnerStateEnum", wireType)
 			}
-			var msglen int
+			m.InnerStateEnum = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowCodec
@@ -1429,28 +1423,11 @@ func (m *CreateCustomStateMsg) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				m.InnerStateEnum |= InnerStateEnum(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
-				return ErrInvalidLengthCodec
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthCodec
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.InnerState == nil {
-				m.InnerState = &InnerState{}
-			}
-			if err := m.InnerState.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CustomInt", wireType)
@@ -1560,7 +1537,7 @@ func (m *CreateCustomStateMsg) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateCustomStateIndexedMsg) Unmarshal(dAtA []byte) error {
+func (m *CreateCustomStateMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1583,10 +1560,10 @@ func (m *CreateCustomStateIndexedMsg) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateCustomStateIndexedMsg: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateCustomStateMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateCustomStateIndexedMsg: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateCustomStateMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
