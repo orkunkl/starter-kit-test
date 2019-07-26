@@ -16,43 +16,37 @@ message InnerState {
   int64 st2 = 2;
 }
 
-// This state demonstrates morm.Model
-message CustomStateWithID {
+// Demonstrates morm.Model
+message CustomState {
   weave.Metadata metadata = 1;
   bytes id = 2 [(gogoproto.customname) = "ID"];
   InnerStateEnum inner_state_enum = 3;
-  InnerState inner_state = 4;
-  int64 custom_int = 5;
-  string custom_string = 6;
-  bytes custom_byte = 7;
+  int64 custom_int = 4;
+  string custom_string = 5;
+  bytes custom_byte = 6;
+  // Demonstrates timestamp in models
+  int64 deleted_at = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
-// This state demonstrates orm.Model
-message CustomStateWithoutID {
+// Demonstrates orm.Model
+message CustomStateIndexed {
   weave.Metadata metadata = 1;
-  InnerStateEnum inner_state_enum = 2;
-  InnerState inner_state = 3;
+  InnerState inner_state = 2;
+  bytes custom_address = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  // Demonstrates timestamp in models
+  int64 created_at = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
+message CreateCustomStateMsg {
+  weave.Metadata metadata = 1;
+  InnerState inner_state = 2;
   int64 custom_int = 4;
   string custom_string = 5;
   bytes custom_byte = 6;
 }
 
-message CreateCustomStateWIDMsg {
+message CreateCustomStateIndexedMsg {
   weave.Metadata metadata = 1;
-  InnerStateEnum inner_state_enum = 2;
   InnerState inner_state = 3;
-  int64 custom_int = 4;
-  string custom_string = 5;
-  bytes custom_byte = 6;
-  bytes custom_address = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
-}
-
-message CreateCustomStateWOIDMsg {
-  weave.Metadata metadata = 1;
-  InnerStateEnum inner_state_enum = 2;
-  InnerState inner_state = 3;
-  int64 custom_int = 4;
-  string custom_string = 5;
-  bytes custom_byte = 6;
-  bytes custom_address = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  bytes custom_address = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
 }
