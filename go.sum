@@ -56,6 +56,8 @@ github.com/google/gofuzz v0.0.0-20170612174753-24818f796faf h1:+RRA9JqSOZFfKrOeq
 github.com/google/gofuzz v0.0.0-20170612174753-24818f796faf/go.mod h1:HP5RmnzzSNb993RKQDq4+1A4ia9nllfqcQFTQJedwGI=
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
+github.com/iov-one/tutorial v0.0.0-20190725141214-913bccf93641 h1:jwG0xbBJC17Vd37aOxMw1JIzHTdL4ZXk7sasy/ap+zE=
+github.com/iov-one/tutorial v0.0.0-20190725141214-913bccf93641/go.mod h1:CjcSSIxMIT5cMLLcKIODXba+M5sWvfmtq8GY3P80Zvc=
 github.com/iov-one/weave v0.19.0 h1:XTlOXV3q0ayjsJJetrmlexeXdMWL3wQ2Xn1azFX6tfE=
 github.com/iov-one/weave v0.19.0/go.mod h1:UHTNgR+0l5fysQKeAIzcKApuv5RMeVgqo+oL8VVXwvo=
 github.com/jessevdk/go-flags v0.0.0-20141203071132-1679536dcc89/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=

@@ -28,10 +28,8 @@ func (m CreateCustomStateIndexedMsg) Validate() error {
 		errs = errors.Append(errs, errors.Field("CustomByte", errors.ErrEmpty, "missing custom byte"))
 	}
 	if m.InnerStateEnum != InnerStateEnum_CaseOne && m.InnerStateEnum != InnerStateEnum_CaseTwo {
-		errs = errors.Append(errs,
-			errors.Field("InnerStateEnum", errors.ErrState, "invalid inner state enum"))
+		errs = errors.AppendField(errs, "InnerStateEnum", errors.ErrState)
 	}
-	// TODO add custom validation for your state fields
 	return errs
 }
 
@@ -47,9 +45,8 @@ func (m CreateCustomStateMsg) Validate() error {
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	errs = errors.AppendField(errs, "CustomAddress", m.CustomAddress.Validate())
 	if m.InnerState == nil {
-		errs = errors.Append(errs, errors.Field("InnerState", errors.ErrEmpty, "missing inner state"))
+		errs = errors.AppendField(errs, "InnerState", errors.ErrEmpty)
 	}
-	// TODO add custom validation for your state fields
 	return errs
 }
 
