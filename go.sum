@@ -60,6 +60,8 @@ github.com/iov-one/tutorial v0.0.0-20190725141214-913bccf93641 h1:jwG0xbBJC17Vd3
 github.com/iov-one/tutorial v0.0.0-20190725141214-913bccf93641/go.mod h1:CjcSSIxMIT5cMLLcKIODXba+M5sWvfmtq8GY3P80Zvc=
 github.com/iov-one/weave v0.19.0 h1:XTlOXV3q0ayjsJJetrmlexeXdMWL3wQ2Xn1azFX6tfE=
 github.com/iov-one/weave v0.19.0/go.mod h1:UHTNgR+0l5fysQKeAIzcKApuv5RMeVgqo+oL8VVXwvo=
+github.com/iov-one/weave v0.20.0 h1:1U3++iLSH8OsO831Eg9RxK8V9kb4evCiJfx6Zx1Mgks=
+github.com/iov-one/weave v0.20.0/go.mod h1:UHTNgR+0l5fysQKeAIzcKApuv5RMeVgqo+oL8VVXwvo=
 github.com/jessevdk/go-flags v0.0.0-20141203071132-1679536dcc89/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
 github.com/jmhodges/levigo v1.0.0/go.mod h1:Q6Qx+uH3RAqyK4rFQroq9RL7mdkABMcfhEI+nNuzMJQ=
 github.com/jrick/logrotate v1.0.0/go.mod h1:LNinyqDIJnpAur+b8yyulnQw/wDuN1+BYKlTRt3OuAQ=
