@@ -39,7 +39,6 @@ func (m *CustomStateIndexed) Copy() orm.CloneableData {
 		Metadata:       m.Metadata.Copy(),
 		ID:             copyBytes(m.ID),
 		InnerStateEnum: m.InnerStateEnum,
-		CustomInt:      m.CustomInt,
 		CustomString:   m.CustomString,
 		CustomByte:     copyBytes(m.CustomByte),
 		DeletedAt:      m.DeletedAt,

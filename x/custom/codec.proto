@@ -23,11 +23,10 @@ message CustomStateIndexed {
   weave.Metadata metadata = 1;
   bytes id = 2 [(gogoproto.customname) = "ID"];
   InnerStateEnum inner_state_enum = 3;
-  int64 custom_int = 4;
-  string custom_string = 5;
-  bytes custom_byte = 6;
+  string custom_string = 4;
+  bytes custom_byte = 5;
   // Demonstrates timestamp in models
-  int64 deleted_at = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+  int64 deleted_at = 6 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
 // Demonstrates orm.Model
@@ -44,7 +43,6 @@ message CustomState {
 message CreateCustomStateIndexedMsg {
   weave.Metadata metadata = 1;
   InnerStateEnum inner_state_enum = 2;
-  int64 custom_int = 3;
   string custom_string = 4;
   bytes custom_byte = 5;
 }

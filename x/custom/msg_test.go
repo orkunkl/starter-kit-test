@@ -17,7 +17,6 @@ func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
 			msg: &CreateCustomStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				CustomInt:      1,
 				CustomString:   "cstm:str",
 				CustomByte:     []byte{0, 1},
 			},
@@ -26,7 +25,6 @@ func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
 		"missing metadata": {
 			msg: &CreateCustomStateIndexedMsg{
 				InnerStateEnum: InnerStateEnum_CaseTwo,
-				CustomInt:      1,
 				CustomString:   "cstm:str",
 				CustomByte:     []byte{0, 1},
 			},
@@ -35,7 +33,6 @@ func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
 		"missing inner state enum": {
 			msg: &CreateCustomStateIndexedMsg{
 				Metadata:     &weave.Metadata{Schema: 1},
-				CustomInt:    1,
 				CustomString: "cstm:str",
 				CustomByte:   []byte{0, 1},
 			},
@@ -45,7 +42,6 @@ func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
 			msg: &CreateCustomStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseTwo,
-				CustomInt:      1,
 				CustomByte:     []byte{0, 1},
 			},
 			wantErr: errors.ErrEmpty,
@@ -54,7 +50,6 @@ func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
 			msg: &CreateCustomStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseTwo,
-				CustomInt:      1,
 				CustomString:   "str",
 				CustomByte:     []byte{0, 1},
 			},
@@ -64,7 +59,6 @@ func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
 			msg: &CreateCustomStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				CustomInt:      1,
 				CustomString:   "cstm:str",
 			},
 			wantErr: errors.ErrEmpty,
