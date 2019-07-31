@@ -39,7 +39,6 @@ func (m *CustomStateIndexed) Copy() orm.CloneableData {
 		Metadata:       m.Metadata.Copy(),
 		ID:             copyBytes(m.ID),
 		InnerStateEnum: m.InnerStateEnum,
-		CustomInt:      m.CustomInt,
 		CustomString:   m.CustomString,
 		CustomByte:     copyBytes(m.CustomByte),
 		DeletedAt:      m.DeletedAt,
@@ -55,6 +54,7 @@ func (m *CustomState) Validate() error {
 	if m.InnerState == nil {
 		errs = errors.AppendField(errs, "InnerState", errors.ErrEmpty)
 	}
+	errs = errors.AppendField(errs, "CustomAddress", m.CustomAddress.Validate())
 	if err := m.CreatedAt.Validate(); err != nil {
 		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
 	} else if m.CreatedAt == 0 {
