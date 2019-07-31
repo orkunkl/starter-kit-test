@@ -8,6 +8,7 @@ import (
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
 	"github.com/iov-one/weave/weavetest"
+	"github.com/iov-one/weave/weavetest/assert"
 
 	"github.com/iov-one/tutorial/morm"
 )
@@ -16,29 +17,43 @@ func TestValidateCustomStateIndexed(t *testing.T) {
 	now := weave.AsUnixTime(time.Now())
 
 	cases := map[string]struct {
-		model   morm.Model
-		wantErr *errors.Error
+		model    morm.Model
+		wantErrs map[string]*errors.Error
 	}{
 		"success, with id": {
 			model: &CustomStateIndexed{
 				Metadata:       &weave.Metadata{Schema: 1},
 				ID:             weavetest.SequenceID(1),
+				InnerStateEnum: InnerStateEnum_CaseOne,
 				CustomString:   "cstm_string",
 				CustomByte:     []byte{0, 1},
-				InnerStateEnum: InnerStateEnum_CaseOne,
 				DeletedAt:      now,
 			},
-			wantErr: nil,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"ID":             nil,
+				"InnerStateEnum": nil,
+				"CustomString":   nil,
+				"CustomByte":     nil,
+				"DeletedAt":      nil,
+			},
 		},
 		"success, no id": {
 			model: &CustomStateIndexed{
 				Metadata:       &weave.Metadata{Schema: 1},
+				InnerStateEnum: InnerStateEnum_CaseOne,
 				CustomString:   "cstm_string",
 				CustomByte:     []byte{0, 1},
-				InnerStateEnum: InnerStateEnum_CaseOne,
 				DeletedAt:      now,
 			},
-			wantErr: nil,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"ID":             nil,
+				"InnerStateEnum": nil,
+				"CustomString":   nil,
+				"CustomByte":     nil,
+				"DeletedAt":      nil,
+			},
 		},
 		"failure, missing metadata": {
 			model: &CustomStateIndexed{
@@ -48,7 +63,14 @@ func TestValidateCustomStateIndexed(t *testing.T) {
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				DeletedAt:      now,
 			},
-			wantErr: errors.ErrMetadata,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       errors.ErrMetadata,
+				"ID":             nil,
+				"InnerStateEnum": nil,
+				"CustomString":   nil,
+				"CustomByte":     nil,
+				"DeletedAt":      nil,
+			},
 		},
 		"failure, missing custom string": {
 			model: &CustomStateIndexed{
@@ -58,7 +80,14 @@ func TestValidateCustomStateIndexed(t *testing.T) {
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				DeletedAt:      now,
 			},
-			wantErr: errors.ErrEmpty,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"ID":             nil,
+				"InnerStateEnum": nil,
+				"CustomString":   errors.ErrEmpty,
+				"CustomByte":     nil,
+				"DeletedAt":      nil,
+			},
 		},
 		"failure, custom string does not begin with 'cstm'": {
 			model: &CustomStateIndexed{
@@ -69,7 +98,14 @@ func TestValidateCustomStateIndexed(t *testing.T) {
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				DeletedAt:      now,
 			},
-			wantErr: errors.ErrInput,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"ID":             nil,
+				"InnerStateEnum": nil,
+				"CustomString":   errors.ErrInput,
+				"CustomByte":     nil,
+				"DeletedAt":      nil,
+			},
 		},
 		"failure, missing inner state enum": {
 			model: &CustomStateIndexed{
@@ -79,7 +115,14 @@ func TestValidateCustomStateIndexed(t *testing.T) {
 				CustomByte:   []byte{0, 1},
 				DeletedAt:    now,
 			},
-			wantErr: errors.ErrState,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"ID":             nil,
+				"InnerStateEnum": errors.ErrState,
+				"CustomString":   nil,
+				"CustomByte":     nil,
+				"DeletedAt":      nil,
+			},
 		},
 		"failure, missing custom byte": {
 			model: &CustomStateIndexed{
@@ -89,7 +132,14 @@ func TestValidateCustomStateIndexed(t *testing.T) {
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				DeletedAt:      now,
 			},
-			wantErr: errors.ErrEmpty,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"ID":             nil,
+				"InnerStateEnum": nil,
+				"CustomString":   nil,
+				"CustomByte":     errors.ErrEmpty,
+				"DeletedAt":      nil,
+			},
 		},
 		"failure, missing deleted at": {
 			model: &CustomStateIndexed{
@@ -99,14 +149,21 @@ func TestValidateCustomStateIndexed(t *testing.T) {
 				CustomByte:     []byte{0, 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
 			},
-			wantErr: errors.ErrEmpty,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"ID":             nil,
+				"InnerStateEnum": nil,
+				"CustomString":   nil,
+				"CustomByte":     nil,
+				"DeletedAt":      errors.ErrEmpty,
+			},
 		},
 	}
-
 	for testName, tc := range cases {
 		t.Run(testName, func(t *testing.T) {
-			if err := tc.model.Validate(); !tc.wantErr.Is(err) {
-				t.Fatalf("unexpected error: %+v", err)
+			err := tc.model.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
 			}
 		})
 	}
@@ -116,8 +173,8 @@ func TestValidateCustomState(t *testing.T) {
 	now := weave.AsUnixTime(time.Now())
 
 	cases := map[string]struct {
-		model   orm.Model
-		wantErr *errors.Error
+		model    orm.Model
+		wantErrs map[string]*errors.Error
 	}{
 		"success": {
 			model: &CustomState{
@@ -126,7 +183,12 @@ func TestValidateCustomState(t *testing.T) {
 				CustomAddress: weavetest.NewCondition().Address(),
 				CreatedAt:     now,
 			},
-			wantErr: nil,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":      nil,
+				"InnerState":    nil,
+				"CustomAddress": nil,
+				"CreatedAt":     nil,
+			},
 		},
 		"failure, missing metadata": {
 			model: &CustomState{
@@ -134,7 +196,12 @@ func TestValidateCustomState(t *testing.T) {
 				CustomAddress: weavetest.NewCondition().Address(),
 				CreatedAt:     now,
 			},
-			wantErr: errors.ErrMetadata,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":      errors.ErrMetadata,
+				"InnerState":    nil,
+				"CustomAddress": nil,
+				"CreatedAt":     nil,
+			},
 		},
 		"failure, missing inner state": {
 			model: &CustomState{
@@ -142,7 +209,12 @@ func TestValidateCustomState(t *testing.T) {
 				CustomAddress: weavetest.NewCondition().Address(),
 				CreatedAt:     now,
 			},
-			wantErr: errors.ErrEmpty,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":      nil,
+				"InnerState":    errors.ErrEmpty,
+				"CustomAddress": nil,
+				"CreatedAt":     nil,
+			},
 		},
 		"failure, missing custom address": {
 			model: &CustomState{
@@ -150,7 +222,12 @@ func TestValidateCustomState(t *testing.T) {
 				InnerState: &InnerState{St1: 1, St2: 2},
 				CreatedAt:  now,
 			},
-			wantErr: errors.ErrEmpty,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":      nil,
+				"InnerState":    nil, 
+				"CustomAddress": errors.ErrEmpty,
+				"CreatedAt":     nil,
+			},
 		},
 		"failure, invalid address lenght": {
 			model: &CustomState{
@@ -159,7 +236,12 @@ func TestValidateCustomState(t *testing.T) {
 				CustomAddress: []byte{0, 1},
 				CreatedAt:     now,
 			},
-			wantErr: errors.ErrInput,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":      nil,
+				"InnerState":    nil, 
+				"CustomAddress": errors.ErrInput,
+				"CreatedAt":     nil,
+			},
 		},
 		"failure, missing created at": {
 			model: &CustomState{
@@ -167,13 +249,19 @@ func TestValidateCustomState(t *testing.T) {
 				InnerState:    &InnerState{St1: 1, St2: 2},
 				CustomAddress: weavetest.NewCondition().Address(),
 			},
-			wantErr: errors.ErrEmpty,
+			wantErrs: map[string]*errors.Error{
+				"Metadata":      nil,
+				"InnerState":    nil, 
+				"CustomAddress": nil,
+				"CreatedAt":     errors.ErrEmpty,
+			},
 		},
 	}
 	for testName, tc := range cases {
 		t.Run(testName, func(t *testing.T) {
-			if err := tc.model.Validate(); !tc.wantErr.Is(err) {
-				t.Fatalf("unexpected error: %+v", err)
+			err := tc.model.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
 			}
 		})
 	}
