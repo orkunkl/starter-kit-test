@@ -15,10 +15,12 @@ func init() {
 
 var _ weave.Msg = (*CreateStateIndexedMsg)(nil)
 
+// Path returns the routing path for this message.
 func (CreateStateIndexedMsg) Path() string {
 	return "custom/create_indexed_state"
 }
 
+// Validate ensures the CreateStateIndexedMsg is valid
 func (m CreateStateIndexedMsg) Validate() error {
 	var errs error
 
@@ -35,10 +37,12 @@ func (m CreateStateIndexedMsg) Validate() error {
 
 var _ weave.Msg = (*CreateStateMsg)(nil)
 
+// Path returns the routing path for this message.
 func (CreateStateMsg) Path() string {
 	return "custom/create_state"
 }
 
+// Validate ensures the CreateStateMsg is valid
 func (m CreateStateMsg) Validate() error {
 	var errs error
 

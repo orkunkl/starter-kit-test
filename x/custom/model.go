@@ -8,11 +8,13 @@ import (
 
 var _ morm.Model = (*StateIndexed)(nil)
 
+// SetID is a minimal implementation, useful when the ID is a separate protobuf field
 func (m *StateIndexed) SetID(id []byte) error {
 	m.ID = id
 	return nil
 }
 
+// Validate ensures the StateIndexed fields are valid
 func (m *StateIndexed) Validate() error {
 	var errs error
 
@@ -34,6 +36,7 @@ func (m *StateIndexed) Validate() error {
 	return errs
 }
 
+// Copy produces a new StateIndexed clone to fulfill the Model interface
 func (m *StateIndexed) Copy() orm.CloneableData {
 	return &StateIndexed{
 		Metadata:       m.Metadata.Copy(),
@@ -47,6 +50,7 @@ func (m *StateIndexed) Copy() orm.CloneableData {
 
 var _ orm.Model = (*State)(nil)
 
+// Validate ensures the State fields are valid
 func (m *State) Validate() error {
 	var errs error
 
@@ -64,6 +68,7 @@ func (m *State) Validate() error {
 	return errs
 }
 
+// Copy produces a new State clone to fulfill the Model interface
 func (m *State) Copy() orm.CloneableData {
 	return &State{
 		Metadata:   m.Metadata.Copy(),
