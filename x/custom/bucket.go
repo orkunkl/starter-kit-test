@@ -1,16 +1,15 @@
 package custom
 
 import (
-	"github.com/iov-one/tutorial/morm"
 	"github.com/iov-one/weave/orm"
 )
 
 type StateIndexedBucket struct {
-	morm.ModelBucket
+	orm.ModelBucket
 }
 
 func newCustomStateIndexedBucket() *StateIndexedBucket {
-	b := morm.NewModelBucket("stateIndexed", &StateIndexed{})
+	b := orm.NewModelBucket("stateIndexed", &StateIndexed{})
 	return &StateIndexedBucket{
 		ModelBucket: b,
 	}
