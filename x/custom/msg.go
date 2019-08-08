@@ -9,23 +9,23 @@ import (
 )
 
 func init() {
-	migration.MustRegister(1, &CreateCustomStateMsg{}, migration.NoModification)
-	migration.MustRegister(1, &CreateCustomStateIndexedMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateStateMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateStateIndexedMsg{}, migration.NoModification)
 }
 
-var _ weave.Msg = (*CreateCustomStateIndexedMsg)(nil)
+var _ weave.Msg = (*CreateStateIndexedMsg)(nil)
 
-func (CreateCustomStateIndexedMsg) Path() string {
-	return "custom/create_custom_indexed_state"
+func (CreateStateIndexedMsg) Path() string {
+	return "custom/create_indexed_state"
 }
 
-func (m CreateCustomStateIndexedMsg) Validate() error {
+func (m CreateStateIndexedMsg) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "CustomString", customStringValidation(m.CustomString))
-	if m.CustomByte == nil {
-		errs = errors.Append(errs, errors.Field("CustomByte", errors.ErrEmpty, "missing custom byte"))
+	errs = errors.AppendField(errs, "Str", stringValidation(m.Str))
+	if m.Byte == nil {
+		errs = errors.Append(errs, errors.Field("Byte", errors.ErrEmpty, "missing byte"))
 	}
 	if m.InnerStateEnum != InnerStateEnum_CaseOne && m.InnerStateEnum != InnerStateEnum_CaseTwo {
 		errs = errors.AppendField(errs, "InnerStateEnum", errors.ErrState)
@@ -33,17 +33,17 @@ func (m CreateCustomStateIndexedMsg) Validate() error {
 	return errs
 }
 
-var _ weave.Msg = (*CreateCustomStateMsg)(nil)
+var _ weave.Msg = (*CreateStateMsg)(nil)
 
-func (CreateCustomStateMsg) Path() string {
-	return "custom/create_custom_state"
+func (CreateStateMsg) Path() string {
+	return "custom/create_state"
 }
 
-func (m CreateCustomStateMsg) Validate() error {
+func (m CreateStateMsg) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "CustomAddress", m.CustomAddress.Validate())
+	errs = errors.AppendField(errs, "Address", m.Address.Validate())
 	if m.InnerState == nil {
 		errs = errors.AppendField(errs, "InnerState", errors.ErrEmpty)
 	}
@@ -62,7 +62,7 @@ func validID(id []byte) error {
 	return nil
 }
 
-func customStringValidation(str string) error {
+func stringValidation(str string) error {
 	if len(str) == 0 {
 		return errors.Wrap(errors.ErrEmpty, "string missing")
 	}

@@ -9,89 +9,89 @@ import (
 	"github.com/iov-one/weave/weavetest/assert"
 )
 
-func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
+func TestValidateCreateStateIndexedMsg(t *testing.T) {
 	cases := map[string]struct {
 		msg      weave.Msg
 		wantErrs map[string]*errors.Error
 	}{
 		"success": {
-			msg: &CreateCustomStateIndexedMsg{
+			msg: &CreateStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				CustomString:   "cstm:str",
-				CustomByte:     []byte{0, 1},
+				Str:            "cstm:str",
+				Byte:           []byte{0, 1},
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
-				"CustomString":   nil,
-				"CustomByte":     nil,
+				"Str":            nil,
+				"Byte":           nil,
 			},
 		},
 		"missing metadata": {
-			msg: &CreateCustomStateIndexedMsg{
+			msg: &CreateStateIndexedMsg{
 				InnerStateEnum: InnerStateEnum_CaseTwo,
-				CustomString:   "cstm:str",
-				CustomByte:     []byte{0, 1},
+				Str:            "cstm:str",
+				Byte:           []byte{0, 1},
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       errors.ErrMetadata,
 				"InnerStateEnum": nil,
-				"CustomString":   nil,
-				"CustomByte":     nil,
+				"Str":            nil,
+				"Byte":           nil,
 			},
 		},
 		"missing inner state enum": {
-			msg: &CreateCustomStateIndexedMsg{
-				Metadata:     &weave.Metadata{Schema: 1},
-				CustomString: "cstm:str",
-				CustomByte:   []byte{0, 1},
+			msg: &CreateStateIndexedMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				Str:      "cstm:str",
+				Byte:     []byte{0, 1},
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": errors.ErrState,
-				"CustomString":   nil,
-				"CustomByte":     nil,
+				"Str":            nil,
+				"Byte":           nil,
 			},
 		},
-		"missing custom string": {
-			msg: &CreateCustomStateIndexedMsg{
+		"missing str": {
+			msg: &CreateStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseTwo,
-				CustomByte:     []byte{0, 1},
+				Byte:           []byte{0, 1},
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
-				"CustomString":   errors.ErrEmpty,
-				"CustomByte":     nil,
+				"Str":            errors.ErrEmpty,
+				"Byte":           nil,
 			},
 		},
-		"custom string does not begin with cstm": {
-			msg: &CreateCustomStateIndexedMsg{
+		"str does not have 'cstm' prefix": {
+			msg: &CreateStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseTwo,
-				CustomString:   "str",
-				CustomByte:     []byte{0, 1},
+				Str:            "str",
+				Byte:           []byte{0, 1},
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
-				"CustomString":   errors.ErrInput,
-				"CustomByte":     nil,
+				"Str":            errors.ErrInput,
+				"Byte":           nil,
 			},
 		},
-		"missing custom byte": {
-			msg: &CreateCustomStateIndexedMsg{
+		"missing byte": {
+			msg: &CreateStateIndexedMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				CustomString:   "cstm:str",
+				Str:            "cstm:str",
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
-				"CustomString":   nil,
-				"CustomByte":     errors.ErrEmpty,
+				"Str":   nil,
+				"Byte":     errors.ErrEmpty,
 			},
 		}}
 	for testName, tc := range cases {
@@ -104,55 +104,55 @@ func TestValidateCreateCustomStateIndexedMsg(t *testing.T) {
 	}
 }
 
-func TestValidateCreateCustomStateMsg(t *testing.T) {
+func TestValidateCreateStateMsg(t *testing.T) {
 	cases := map[string]struct {
 		msg      weave.Msg
 		wantErrs map[string]*errors.Error
 	}{
 		"success": {
-			msg: &CreateCustomStateMsg{
-				Metadata:      &weave.Metadata{Schema: 1},
-				InnerState:    &InnerState{St1: 1, St2: 2},
-				CustomAddress: weavetest.NewCondition().Address(),
+			msg: &CreateStateMsg{
+				Metadata:   &weave.Metadata{Schema: 1},
+				InnerState: &InnerState{St1: 1, St2: 2},
+				Address:    weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata":      nil,
-				"InnerState":    nil,
-				"CustomAddress": nil,
+				"Metadata":   nil,
+				"InnerState": nil,
+				"Address":    nil,
 			},
 		},
 		"missing metadata": {
-			msg: &CreateCustomStateMsg{
-				InnerState:    &InnerState{St1: 1, St2: 2},
-				CustomAddress: weavetest.NewCondition().Address(),
+			msg: &CreateStateMsg{
+				InnerState: &InnerState{St1: 1, St2: 2},
+				Address:    weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata":      errors.ErrMetadata,
-				"InnerState":    nil,
-				"CustomAddress": nil,
+				"Metadata":   errors.ErrMetadata,
+				"InnerState": nil,
+				"Address":    nil,
 			},
 		},
 		"missing inner state": {
-			msg: &CreateCustomStateMsg{
-				Metadata:      &weave.Metadata{Schema: 1},
-				CustomAddress: weavetest.NewCondition().Address(),
+			msg: &CreateStateMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				Address:  weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata":      nil,
-				"InnerState":    errors.ErrEmpty,
-				"CustomAddress": nil,
+				"Metadata":   nil,
+				"InnerState": errors.ErrEmpty,
+				"Address":    nil,
 			},
 		},
 		"bad address": {
-			msg: &CreateCustomStateMsg{
-				Metadata:      &weave.Metadata{Schema: 1},
-				InnerState:    &InnerState{St1: 1, St2: 2},
-				CustomAddress: []byte{0, 1},
+			msg: &CreateStateMsg{
+				Metadata:   &weave.Metadata{Schema: 1},
+				InnerState: &InnerState{St1: 1, St2: 2},
+				Address:    []byte{0, 1},
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata":      nil,
-				"InnerState":    nil,
-				"CustomAddress": errors.ErrInput,
+				"Metadata":   nil,
+				"InnerState": nil,
+				"Address":    errors.ErrInput,
 			},
 		},
 	}
