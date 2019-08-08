@@ -6,21 +6,21 @@ import (
 	"github.com/iov-one/weave/orm"
 )
 
-var _ morm.Model = (*CustomStateIndexed)(nil)
+var _ morm.Model = (*StateIndexed)(nil)
 
-func (m *CustomStateIndexed) SetID(id []byte) error {
+func (m *StateIndexed) SetID(id []byte) error {
 	m.ID = id
 	return nil
 }
 
-func (m *CustomStateIndexed) Validate() error {
+func (m *StateIndexed) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	errs = errors.AppendField(errs, "ID", isGenID(m.ID, true))
-	errs = errors.AppendField(errs, "CustomString", customStringValidation(m.CustomString))
-	if m.CustomByte == nil {
-		errs = errors.AppendField(errs, "CustomByte", errors.ErrEmpty)
+	errs = errors.AppendField(errs, "Str", stringValidation(m.Str))
+	if m.Byte == nil {
+		errs = errors.AppendField(errs, "Byte", errors.ErrEmpty)
 	}
 	if m.InnerStateEnum != InnerStateEnum_CaseOne && m.InnerStateEnum != InnerStateEnum_CaseTwo {
 		errs = errors.AppendField(errs, "InnerStateEnum", errors.ErrState)
@@ -34,27 +34,27 @@ func (m *CustomStateIndexed) Validate() error {
 	return errs
 }
 
-func (m *CustomStateIndexed) Copy() orm.CloneableData {
-	return &CustomStateIndexed{
+func (m *StateIndexed) Copy() orm.CloneableData {
+	return &StateIndexed{
 		Metadata:       m.Metadata.Copy(),
 		ID:             copyBytes(m.ID),
 		InnerStateEnum: m.InnerStateEnum,
-		CustomString:   m.CustomString,
-		CustomByte:     copyBytes(m.CustomByte),
+		Str:            m.Str,
+		Byte:           copyBytes(m.Byte),
 		DeletedAt:      m.DeletedAt,
 	}
 }
 
-var _ orm.Model = (*CustomState)(nil)
+var _ orm.Model = (*State)(nil)
 
-func (m *CustomState) Validate() error {
+func (m *State) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	if m.InnerState == nil {
 		errs = errors.AppendField(errs, "InnerState", errors.ErrEmpty)
 	}
-	errs = errors.AppendField(errs, "CustomAddress", m.CustomAddress.Validate())
+	errs = errors.AppendField(errs, "Address", m.Address.Validate())
 	if err := m.CreatedAt.Validate(); err != nil {
 		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
 	} else if m.CreatedAt == 0 {
@@ -64,14 +64,13 @@ func (m *CustomState) Validate() error {
 	return errs
 }
 
-func (m *CustomState) Copy() orm.CloneableData {
-	return &CustomState{
-		Metadata:      m.Metadata.Copy(),
-		InnerState:    m.InnerState,
-		CustomAddress: copyBytes(m.CustomAddress),
-		CreatedAt:     m.CreatedAt,
+func (m *State) Copy() orm.CloneableData {
+	return &State{
+		Metadata:   m.Metadata.Copy(),
+		InnerState: m.InnerState,
+		Address:    copyBytes(m.Address),
+		CreatedAt:  m.CreatedAt,
 	}
-
 }
 
 // isGenID ensures that the ID is 8 byte input.
