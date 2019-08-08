@@ -5,24 +5,24 @@ import (
 	"github.com/iov-one/weave/orm"
 )
 
-type CustomStateIndexedBucket struct {
+type StateIndexedBucket struct {
 	morm.ModelBucket
 }
 
-func newCustomStateIndexedBucket() *CustomStateIndexedBucket {
-	b := morm.NewModelBucket("customStateIndexed", &CustomStateIndexed{})
-	return &CustomStateIndexedBucket{
+func newCustomStateIndexedBucket() *StateIndexedBucket {
+	b := morm.NewModelBucket("stateIndexed", &StateIndexed{})
+	return &StateIndexedBucket{
 		ModelBucket: b,
 	}
 }
 
-type CustomStateBucket struct {
+type StateBucket struct {
 	orm.ModelBucket
 }
 
-func newCustomStateBucket() *CustomStateBucket {
-	b := orm.NewModelBucket("customState", &CustomState{})
-	return &CustomStateBucket{
+func newCustomStateBucket() *StateBucket {
+	b := orm.NewModelBucket("state", &State{})
+	return &StateBucket{
 		ModelBucket: b,
 	}
 }
