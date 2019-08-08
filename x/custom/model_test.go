@@ -9,15 +9,13 @@ import (
 	"github.com/iov-one/weave/orm"
 	"github.com/iov-one/weave/weavetest"
 	"github.com/iov-one/weave/weavetest/assert"
-
-	"github.com/iov-one/tutorial/morm"
 )
 
 func TestValidateStateIndexed(t *testing.T) {
 	now := weave.AsUnixTime(time.Now())
 
 	cases := map[string]struct {
-		model    morm.Model
+		model    orm.Model
 		wantErrs map[string]*errors.Error
 	}{
 		"success, with id": {

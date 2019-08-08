@@ -1,12 +1,11 @@
 package custom
 
 import (
-	"github.com/iov-one/tutorial/morm"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
 )
 
-var _ morm.Model = (*StateIndexed)(nil)
+var _ orm.Model = (*StateIndexed)(nil)
 
 // SetID is a minimal implementation, useful when the ID is a separate protobuf field
 func (m *StateIndexed) SetID(id []byte) error {
