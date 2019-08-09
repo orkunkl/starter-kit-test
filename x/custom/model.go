@@ -2,23 +2,24 @@ package custom
 
 import (
 	"github.com/iov-one/weave/errors"
+	"github.com/iov-one/weave/migration"
 	"github.com/iov-one/weave/orm"
 )
 
-var _ orm.Model = (*StateIndexed)(nil)
-
-// SetID is a minimal implementation, useful when the ID is a separate protobuf field
-func (m *StateIndexed) SetID(id []byte) error {
-	m.ID = id
-	return nil
+func init() {
+	// Migration needs to be registered for every message introduced in the codec.
+	// This is the convention to message versioning.
+	migration.MustRegister(1, &TimedState{}, migration.NoModification)
+	migration.MustRegister(1, &State{}, migration.NoModification)
 }
 
-// Validate ensures the StateIndexed fields are valid
-func (m *StateIndexed) Validate() error {
+var _ orm.Model = (*TimedState)(nil)
+
+// Validate ensures the TimedState fields are valid
+func (m *TimedState) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "ID", isGenID(m.ID, true))
 	errs = errors.AppendField(errs, "Str", stringValidation(m.Str))
 	if m.Byte == nil {
 		errs = errors.AppendField(errs, "Byte", errors.ErrEmpty)
@@ -27,19 +28,13 @@ func (m *StateIndexed) Validate() error {
 		errs = errors.AppendField(errs, "InnerStateEnum", errors.ErrState)
 	}
 
-	if err := m.DeletedAt.Validate(); err != nil {
-		errs = errors.AppendField(errs, "DeletedAt", m.DeletedAt.Validate())
-	} else if m.DeletedAt == 0 {
-		errs = errors.AppendField(errs, "DeletedAt", errors.ErrEmpty)
-	}
 	return errs
 }
 
-// Copy produces a new StateIndexed clone to fulfill the Model interface
-func (m *StateIndexed) Copy() orm.CloneableData {
-	return &StateIndexed{
+// Copy produces a new TimedState clone to fulfill the Model interface
+func (m *TimedState) Copy() orm.CloneableData {
+	return &TimedState{
 		Metadata:       m.Metadata.Copy(),
-		ID:             copyBytes(m.ID),
 		InnerStateEnum: m.InnerStateEnum,
 		Str:            m.Str,
 		Byte:           copyBytes(m.Byte),

@@ -10,18 +10,18 @@ import (
 
 func init() {
 	migration.MustRegister(1, &CreateStateMsg{}, migration.NoModification)
-	migration.MustRegister(1, &CreateStateIndexedMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateTimedStateMsg{}, migration.NoModification)
 }
 
-var _ weave.Msg = (*CreateStateIndexedMsg)(nil)
+var _ weave.Msg = (*CreateTimedStateMsg)(nil)
 
 // Path returns the routing path for this message.
-func (CreateStateIndexedMsg) Path() string {
+func (CreateTimedStateMsg) Path() string {
 	return "custom/create_indexed_state"
 }
 
-// Validate ensures the CreateStateIndexedMsg is valid
-func (m CreateStateIndexedMsg) Validate() error {
+// Validate ensures the CreateTimedStateMsg is valid
+func (m CreateTimedStateMsg) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())

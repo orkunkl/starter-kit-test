@@ -9,13 +9,13 @@ import (
 	"github.com/iov-one/weave/weavetest/assert"
 )
 
-func TestValidateCreateStateIndexedMsg(t *testing.T) {
+func TestValidateCreateTimedStateMsg(t *testing.T) {
 	cases := map[string]struct {
 		msg      weave.Msg
 		wantErrs map[string]*errors.Error
 	}{
 		"success": {
-			msg: &CreateStateIndexedMsg{
+			msg: &CreateTimedStateMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				Str:            "cstm:str",
@@ -29,7 +29,7 @@ func TestValidateCreateStateIndexedMsg(t *testing.T) {
 			},
 		},
 		"missing metadata": {
-			msg: &CreateStateIndexedMsg{
+			msg: &CreateTimedStateMsg{
 				InnerStateEnum: InnerStateEnum_CaseTwo,
 				Str:            "cstm:str",
 				Byte:           []byte{0, 1},
@@ -42,7 +42,7 @@ func TestValidateCreateStateIndexedMsg(t *testing.T) {
 			},
 		},
 		"missing inner state enum": {
-			msg: &CreateStateIndexedMsg{
+			msg: &CreateTimedStateMsg{
 				Metadata: &weave.Metadata{Schema: 1},
 				Str:      "cstm:str",
 				Byte:     []byte{0, 1},
@@ -55,7 +55,7 @@ func TestValidateCreateStateIndexedMsg(t *testing.T) {
 			},
 		},
 		"missing str": {
-			msg: &CreateStateIndexedMsg{
+			msg: &CreateTimedStateMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseTwo,
 				Byte:           []byte{0, 1},
@@ -68,7 +68,7 @@ func TestValidateCreateStateIndexedMsg(t *testing.T) {
 			},
 		},
 		"str does not have 'cstm' prefix": {
-			msg: &CreateStateIndexedMsg{
+			msg: &CreateTimedStateMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseTwo,
 				Str:            "str",
@@ -82,7 +82,7 @@ func TestValidateCreateStateIndexedMsg(t *testing.T) {
 			},
 		},
 		"missing byte": {
-			msg: &CreateStateIndexedMsg{
+			msg: &CreateTimedStateMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				Str:            "cstm:str",
