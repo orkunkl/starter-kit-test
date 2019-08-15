@@ -144,7 +144,7 @@ func (h StateHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.T
 	}
 
 	now := weave.AsUnixTime(time.Now())
-	
+
 	key, err := stateSeq.NextVal(store)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot acquire key")

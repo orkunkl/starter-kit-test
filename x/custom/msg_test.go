@@ -90,8 +90,8 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
-				"Str":   nil,
-				"Byte":     errors.ErrEmpty,
+				"Str":            nil,
+				"Byte":           errors.ErrEmpty,
 			},
 		}}
 	for testName, tc := range cases {
