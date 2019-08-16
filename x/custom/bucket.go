@@ -8,34 +8,24 @@ import (
 )
 
 type TimedStateBucket struct {
-	orm.IDGenBucket
+	orm.ModelBucket
 }
 
 func NewTimedStateBucket() *TimedStateBucket {
-	b := migration.NewBucket(packageName, "stateind", orm.NewSimpleObj(nil, &TimedState{}))
+	b := orm.NewModelBucket("timedstate", &TimedState{})
 	return &TimedStateBucket{
-		IDGenBucket: orm.WithSeqIDGenerator(b, "id"),
+		ModelBucket: migration.NewModelBucket(packageName, b),
 	}
 }
 
 // GetTimedState loads the TimedState for the given id. If it does not exist then ErrNotFound is returned.
 func (b *TimedStateBucket) GetTimedState(db weave.KVStore, id []byte) (*TimedState, error) {
-	obj, err := b.Get(db, id)
+	var timedState TimedState
+	err := b.One(db, id, &timedState)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to load indexed state")
+		return nil, errors.Wrap(err, "failed to load timed state")
 	}
-	return asTimedState(obj)
-}
-
-func asTimedState(obj orm.Object) (*TimedState, error) {
-	if obj == nil || obj.Value() == nil {
-		return nil, errors.Wrap(errors.ErrNotFound, "unknown id")
-	}
-	rev, ok := obj.Value().(*TimedState)
-	if !ok {
-		return nil, errors.Wrapf(errors.ErrModel, "invalid type: %T", obj.Value())
-	}
-	return rev, nil
+	return &timedState, nil
 }
 
 type StateBucket struct {
