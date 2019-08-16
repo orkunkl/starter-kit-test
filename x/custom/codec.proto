@@ -24,7 +24,7 @@ message TimedState {
   string str = 3;
   bytes byte = 4;
   // Demonstrates timestamp in models
-  int64 deleted_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+  int64 delete_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
 // Demonstrates orm.Model
@@ -41,8 +41,9 @@ message State {
 message CreateTimedStateMsg {
   weave.Metadata metadata = 1;
   InnerStateEnum inner_state_enum = 2;
-  string str = 4;
-  bytes byte = 5;
+  string str = 3;
+  bytes byte = 4;
+  int64 delete_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
 message CreateStateMsg {
