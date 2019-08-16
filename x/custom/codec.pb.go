@@ -109,7 +109,8 @@ type TimedState struct {
 	InnerStateEnum InnerStateEnum  `protobuf:"varint,2,opt,name=inner_state_enum,json=innerStateEnum,proto3,enum=custom.InnerStateEnum" json:"inner_state_enum,omitempty"`
 	Str            string          `protobuf:"bytes,3,opt,name=str,proto3" json:"str,omitempty"`
 	Byte           []byte          `protobuf:"bytes,4,opt,name=byte,proto3" json:"byte,omitempty"`
-	// Demonstrates timestamp in models
+	// DeleteAt is a deletion event that will take place in future
+	// Demonstrates cron usage
 	DeleteAt github_com_iov_one_weave.UnixTime `protobuf:"varint,5,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
 }
 
@@ -181,7 +182,6 @@ func (m *TimedState) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 	return 0
 }
 
-// Demonstrates orm.Model
 type State struct {
 	Metadata   *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	InnerState *InnerState                      `protobuf:"bytes,2,opt,name=inner_state,json=innerState,proto3" json:"inner_state,omitempty"`
@@ -252,11 +252,13 @@ func (m *State) GetCreatedAt() github_com_iov_one_weave.UnixTime {
 }
 
 type CreateTimedStateMsg struct {
-	Metadata       *weave.Metadata                   `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	InnerStateEnum InnerStateEnum                    `protobuf:"varint,2,opt,name=inner_state_enum,json=innerStateEnum,proto3,enum=custom.InnerStateEnum" json:"inner_state_enum,omitempty"`
-	Str            string                            `protobuf:"bytes,3,opt,name=str,proto3" json:"str,omitempty"`
-	Byte           []byte                            `protobuf:"bytes,4,opt,name=byte,proto3" json:"byte,omitempty"`
-	DeleteAt       github_com_iov_one_weave.UnixTime `protobuf:"varint,5,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
+	Metadata       *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	InnerStateEnum InnerStateEnum  `protobuf:"varint,2,opt,name=inner_state_enum,json=innerStateEnum,proto3,enum=custom.InnerStateEnum" json:"inner_state_enum,omitempty"`
+	Str            string          `protobuf:"bytes,3,opt,name=str,proto3" json:"str,omitempty"`
+	Byte           []byte          `protobuf:"bytes,4,opt,name=byte,proto3" json:"byte,omitempty"`
+	// DeleteAt is a deletion event that will take place in future
+	// Demonstrates cron usage
+	DeleteAt github_com_iov_one_weave.UnixTime `protobuf:"varint,5,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
 }
 
 func (m *CreateTimedStateMsg) Reset()         { *m = CreateTimedStateMsg{} }

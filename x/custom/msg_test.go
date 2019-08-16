@@ -2,6 +2,7 @@ package custom
 
 import (
 	"testing"
+	"time"
 
 	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/errors"
@@ -10,11 +11,30 @@ import (
 )
 
 func TestValidateCreateTimedStateMsg(t *testing.T) {
+	now := weave.AsUnixTime(time.Now())
+	future := now.Add(time.Hour)
+
 	cases := map[string]struct {
 		msg      weave.Msg
 		wantErrs map[string]*errors.Error
 	}{
 		"success": {
+			msg: &CreateTimedStateMsg{
+				Metadata:       &weave.Metadata{Schema: 1},
+				InnerStateEnum: InnerStateEnum_CaseOne,
+				Str:            "cstm:str",
+				Byte:           []byte{0, 1},
+				DeleteAt:       future,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"InnerStateEnum": nil,
+				"Str":            nil,
+				"Byte":           nil,
+				"DeleteAt":       nil,
+			},
+		},
+		"success, no delete at": {
 			msg: &CreateTimedStateMsg{
 				Metadata:       &weave.Metadata{Schema: 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
@@ -26,6 +46,7 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"missing metadata": {
@@ -39,6 +60,7 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"missing inner state enum": {
@@ -52,6 +74,7 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 				"InnerStateEnum": errors.ErrState,
 				"Str":            nil,
 				"Byte":           nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"missing str": {
@@ -65,6 +88,7 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 				"InnerStateEnum": nil,
 				"Str":            errors.ErrEmpty,
 				"Byte":           nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"str does not have 'cstm' prefix": {
@@ -79,6 +103,7 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 				"InnerStateEnum": nil,
 				"Str":            errors.ErrInput,
 				"Byte":           nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"missing byte": {
@@ -92,8 +117,10 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           errors.ErrEmpty,
+				"DeleteAt":       nil,
 			},
-		}}
+		},
+	}
 	for testName, tc := range cases {
 		t.Run(testName, func(t *testing.T) {
 			err := tc.msg.Validate()

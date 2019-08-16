@@ -54,6 +54,10 @@ func (h TimedStateHandler) validate(ctx weave.Context, db weave.KVStore, tx weav
 		return nil, errors.Wrap(err, "load msg")
 	}
 
+	if msg.DeleteAt != 0 && weave.InThePast(ctx, msg.DeleteAt.Time()) == true {
+		return nil, errors.AppendField(nil, "DeleteAt", errors.ErrInput)
+	}
+	
 	return &msg, nil
 }
 
@@ -81,6 +85,7 @@ func (h TimedStateHandler) Deliver(ctx weave.Context, store weave.KVStore, tx we
 		InnerStateEnum: msg.InnerStateEnum,
 		Str:            msg.Str,
 		Byte:           msg.Byte,
+		DeleteAt:       msg.DeleteAt,
 	}
 
 	key, err := h.b.Put(store, nil, timedState)
@@ -88,7 +93,7 @@ func (h TimedStateHandler) Deliver(ctx weave.Context, store weave.KVStore, tx we
 		return nil, errors.Wrap(err, "cannot store indexed state")
 	}
 
-	return &weave.DeliverResult{Data: key}, err
+	return &weave.DeliverResult{Data: key}, nil
 }
 
 // ------------------- CustomState HANDLER -------------------

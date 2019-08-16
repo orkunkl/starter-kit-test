@@ -1,6 +1,7 @@
 package custom
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -14,6 +15,9 @@ import (
 
 func TestCreateTimedState(t *testing.T) {
 	meta := &weave.Metadata{Schema: 1}
+	now := weave.AsUnixTime(time.Now())
+	future := now.Add(time.Hour)
+	past := now.Add(-1 * time.Hour)
 
 	cases := map[string]struct {
 		msg             weave.Msg
@@ -22,6 +26,36 @@ func TestCreateTimedState(t *testing.T) {
 		wantDeliverErrs map[string]*errors.Error
 	}{
 		"success": {
+			msg: &CreateTimedStateMsg{
+				Metadata:       meta,
+				InnerStateEnum: InnerStateEnum_CaseOne,
+				Str:            "cstm_str",
+				Byte:           []byte{0, 1},
+				DeleteAt:       future,
+			},
+			expected: &TimedState{
+				Metadata:       meta,
+				InnerStateEnum: InnerStateEnum_CaseOne,
+				Str:            "cstm_str",
+				Byte:           []byte{0, 1},
+				DeleteAt:       future,
+			},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"InnerStateEnum": nil,
+				"Str":            nil,
+				"Byte":           nil,
+				"DeleteAt":       nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"InnerStateEnum": nil,
+				"Str":            nil,
+				"Byte":           nil,
+				"DeleteAt":       nil,
+			},
+		},
+		"success no delete at": {
 			msg: &CreateTimedStateMsg{
 				Metadata:       meta,
 				InnerStateEnum: InnerStateEnum_CaseOne,
@@ -39,31 +73,54 @@ func TestCreateTimedState(t *testing.T) {
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
-		"failure, empty message": {
+		"failure delete at is in the past": {
+			msg: &CreateTimedStateMsg{
+				Metadata:       meta,
+				InnerStateEnum: InnerStateEnum_CaseOne,
+				Str:            "cstm_str",
+				Byte:           []byte{0, 1},
+				DeleteAt:       past,
+			},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"InnerStateEnum": nil,
+				"Str":            nil,
+				"Byte":           nil,
+				"DeleteAt":       errors.ErrInput,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"InnerStateEnum": nil,
+				"Str":            nil,
+				"Byte":           nil,
+				"DeleteAt":       errors.ErrInput,
+			},
+		},
+		"failure empty message": {
 			msg: &CreateTimedStateMsg{},
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":       errors.ErrMetadata,
 				"InnerStateEnum": errors.ErrState,
 				"Str":            errors.ErrEmpty,
 				"Byte":           errors.ErrEmpty,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":       errors.ErrMetadata,
 				"InnerStateEnum": errors.ErrState,
 				"Str":            errors.ErrEmpty,
 				"Byte":           errors.ErrEmpty,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
 	}
@@ -78,15 +135,19 @@ func TestCreateTimedState(t *testing.T) {
 
 			tx := &weavetest.Tx{Msg: tc.msg}
 
-			if _, err := h.Check(nil, kv, tx); err != nil {
+			ctx := weave.WithBlockTime(context.Background(), now.Time())
+
+			if _, err := h.Check(ctx, kv, tx); err != nil {
 				for field, wantErr := range tc.wantCheckErrs {
 					assert.FieldError(t, err, field, wantErr)
 				}
 			}
 
-			res, err := h.Deliver(nil, kv, tx)
-			for field, wantErr := range tc.wantDeliverErrs {
-				assert.FieldError(t, err, field, wantErr)
+			res, err := h.Deliver(ctx, kv, tx)
+			if err != nil {
+				for field, wantErr := range tc.wantDeliverErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
 			}
 
 			if tc.expected != nil {

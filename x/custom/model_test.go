@@ -13,6 +13,8 @@ import (
 
 func TestValidateTimedState(t *testing.T) {
 	now := weave.AsUnixTime(time.Now())
+	future := now.Add(time.Hour)
+	past := now.Add(time.Hour * time.Duration(-1))
 
 	cases := map[string]struct {
 		model    orm.Model
@@ -24,14 +26,14 @@ func TestValidateTimedState(t *testing.T) {
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				Str:            "cstm_string",
 				Byte:           []byte{0, 1},
-				DeletedAt:      now,
+				DeleteAt:       future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"success, no id": {
@@ -40,14 +42,30 @@ func TestValidateTimedState(t *testing.T) {
 				InnerStateEnum: InnerStateEnum_CaseOne,
 				Str:            "cstm_string",
 				Byte:           []byte{0, 1},
-				DeletedAt:      now,
+				DeleteAt:       future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
+			},
+		},
+		"success, delete at is past": {
+			model: &TimedState{
+				Metadata:       &weave.Metadata{Schema: 1},
+				InnerStateEnum: InnerStateEnum_CaseOne,
+				Str:            "cstm_string",
+				Byte:           []byte{0, 1},
+				DeleteAt:       past,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":       nil,
+				"InnerStateEnum": nil,
+				"Str":            nil,
+				"Byte":           nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"failure, missing metadata": {
@@ -55,14 +73,14 @@ func TestValidateTimedState(t *testing.T) {
 				Str:            "cstm_string",
 				Byte:           []byte{0, 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				DeletedAt:      now,
+				DeleteAt:       future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       errors.ErrMetadata,
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"failure, missing str": {
@@ -70,14 +88,14 @@ func TestValidateTimedState(t *testing.T) {
 				Metadata:       &weave.Metadata{Schema: 1},
 				Byte:           []byte{0, 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				DeletedAt:      now,
+				DeleteAt:       future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
 				"Str":            errors.ErrEmpty,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"failure, str does not begin with 'cstm'": {
@@ -86,29 +104,29 @@ func TestValidateTimedState(t *testing.T) {
 				Str:            "string",
 				Byte:           []byte{0, 1},
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				DeletedAt:      now,
+				DeleteAt:       future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
 				"Str":            errors.ErrInput,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"failure, missing inner state enum": {
 			model: &TimedState{
-				Metadata:  &weave.Metadata{Schema: 1},
-				Str:       "cstm_string",
-				Byte:      []byte{0, 1},
-				DeletedAt: now,
+				Metadata: &weave.Metadata{Schema: 1},
+				Str:      "cstm_string",
+				Byte:     []byte{0, 1},
+				DeleteAt: future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": errors.ErrState,
 				"String":         nil,
 				"Byte":           nil,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
 		"failure, missing custom byte": {
@@ -116,14 +134,14 @@ func TestValidateTimedState(t *testing.T) {
 				Metadata:       &weave.Metadata{Schema: 1},
 				Str:            "cstm_string",
 				InnerStateEnum: InnerStateEnum_CaseOne,
-				DeletedAt:      now,
+				DeleteAt:       future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":       nil,
 				"InnerStateEnum": nil,
 				"Str":            nil,
 				"Byte":           errors.ErrEmpty,
-				"DeletedAt":      nil,
+				"DeleteAt":       nil,
 			},
 		},
 	}

@@ -28,6 +28,11 @@ func (m *TimedState) Validate() error {
 		errs = errors.AppendField(errs, "InnerStateEnum", errors.ErrState)
 	}
 
+	if m.DeleteAt == 0 {
+		return errs
+	} else if err := m.DeleteAt.Validate(); err != nil {
+		errs = errors.AppendField(errs, "DeleteAt", m.DeleteAt.Validate())
+	}
 	return errs
 }
 
@@ -38,7 +43,7 @@ func (m *TimedState) Copy() orm.CloneableData {
 		InnerStateEnum: m.InnerStateEnum,
 		Str:            m.Str,
 		Byte:           copyBytes(m.Byte),
-		DeletedAt:      m.DeletedAt,
+		DeleteAt:       m.DeleteAt,
 	}
 }
 

@@ -17,7 +17,7 @@ var _ weave.Msg = (*CreateTimedStateMsg)(nil)
 
 // Path returns the routing path for this message.
 func (CreateTimedStateMsg) Path() string {
-	return "custom/create_indexed_state"
+	return "custom/create_timed_state"
 }
 
 // Validate ensures the CreateTimedStateMsg is valid
@@ -31,6 +31,12 @@ func (m CreateTimedStateMsg) Validate() error {
 	}
 	if m.InnerStateEnum != InnerStateEnum_CaseOne && m.InnerStateEnum != InnerStateEnum_CaseTwo {
 		errs = errors.AppendField(errs, "InnerStateEnum", errors.ErrState)
+	}
+
+	if m.DeleteAt == 0 {
+		return errs
+	} else if err := m.DeleteAt.Validate(); err != nil {
+		errs = errors.AppendField(errs, "DeleteAt", m.DeleteAt.Validate())
 	}
 	return errs
 }
