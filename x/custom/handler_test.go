@@ -90,10 +90,11 @@ func TestCreateTimedState(t *testing.T) {
 			}
 
 			if tc.expected != nil {
-				stored, err := bucket.GetTimedState(kv, res.Data)
+				var stored TimedState
+				err := bucket.One(kv, res.Data, &stored)
 
 				assert.Nil(t, err)
-				assert.Equal(t, tc.expected, stored)
+				assert.Equal(t, tc.expected, &stored)
 			}
 		})
 	}
