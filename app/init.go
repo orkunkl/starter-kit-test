@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -25,7 +26,7 @@ import (
 // account, to use for dev mode
 func GenInitOptions(args []string) (json.RawMessage, error) {
 	// Your coins ticker code
-	ticker := "PRJCT"
+	ticker := "CSTM"
 	if len(args) > 0 {
 		ticker = args[0]
 		if !coin.IsCC(ticker) {
@@ -69,16 +70,10 @@ func GenInitOptions(args []string) (json.RawMessage, error) {
 				},
 			},
 		},
-		"currencies": array{
-			dict{
-				"ticker": "PRJCT",
-				"name":   "Your projects native token",
-			},
-		},
 		"conf": dict{
-			"collector_address": cash.Configuration{
-				CollectorAddress: collectorAddr,
-				MinimalFee:       coin.Coin{Whole: 0}, // no fee
+			"cash": dict{
+				"collector_address": collectorAddr,
+				"minimal_fee":       coin.Coin{Whole: 0}, // no fee
 			},
 			"migration": dict{
 				// admin is who can change this redistribution address to other address
@@ -86,12 +81,12 @@ func GenInitOptions(args []string) (json.RawMessage, error) {
 			},
 		},
 		"initialize_schema": []dict{
+			{"pkg": "migration", "ver": 1},
 			{"pkg": "custom", "ver": 1},
 			{"pkg": "cash", "ver": 1},
 			{"pkg": "sigs", "ver": 1},
 			{"pkg": "multisig", "ver": 1},
 			{"pkg": "utils", "ver": 1},
-			{"pkg": "migration", "ver": 1},
 			{"pkg": "validators", "ver": 1},
 		},
 	})
@@ -102,11 +97,11 @@ func GenerateApp(options *server.Options) (abci.Application, error) {
 	// db goes in a subdir, but "" -> "" for memdb
 	var dbPath string
 	if options.Home != "" {
-		dbPath = filepath.Join(options.Home, "abci.db")
+		dbPath = filepath.Join(options.Home, "custom.db")
 	}
 
 	stack := Stack(nil, options.MinFee)
-	application, err := Application("project", stack, TxDecoder, dbPath, options.Debug)
+	application, err := Application("customd", stack, TxDecoder, dbPath, options.Debug)
 	if err != nil {
 		return nil, err
 	}
@@ -117,14 +112,24 @@ func GenerateApp(options *server.Options) (abci.Application, error) {
 // DecorateApp adds initializers and Logger to an Application
 func DecorateApp(application app.BaseApp, logger log.Logger) app.BaseApp {
 	application.WithInit(app.ChainInitializers(
+		&migration.Initializer{},
 		&cash.Initializer{},
 		&multisig.Initializer{},
 		&currency.Initializer{},
-		&migration.Initializer{},
 		&validators.Initializer{},
 	))
 	application.WithLogger(logger)
 	return application
+}
+
+// InlineApp will take a previously prepared CommitStore and return a complete Application
+func InlineApp(kv weave.CommitKVStore, logger log.Logger, debug bool) abci.Application {
+	minFee := coin.Coin{}
+	stack := Stack(nil, minFee)
+	ctx := context.Background()
+	store := app.NewStoreApp("customd", kv, QueryRouter(), ctx)
+	base := app.NewBaseApp(store, TxDecoder, stack, nil, debug)
+	return DecorateApp(base, logger)
 }
 
 type output struct {

@@ -23,10 +23,10 @@ import "x/custom/codec.proto";
 // old fields got deprecated. This is done to maintain binary compatibility.
 message Tx {
   // Enables coin.GetFees()
-  cash.FeeInfo cash_fees = 1;
+  cash.FeeInfo fees = 1;
   //StdSignature represents the signature, the identity of the signer
   // (the Pubkey), and a sequence number to prevent replay attacks.
-  repeated sigs.StdSignature sigs_signatures = 2;
+  repeated sigs.StdSignature signatures = 2;
   // ID of a multisig contract.
   repeated bytes multisig = 4;
   // sum defines over all allowed messages on this chain.
@@ -38,6 +38,6 @@ message Tx {
     currency.CreateMsg currency_create_msg = 59;
     migration.UpgradeSchemaMsg migration_upgrade_schema_msg = 69;
     custom.CreateTimedStateMsg custom_create_timed_state_msg = 100;
-    custom.CreateStateMsg create_state_msg = 101;
+    custom.CreateStateMsg custom_create_state_msg = 101;
   }
 }
