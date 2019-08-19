@@ -128,7 +128,7 @@ func TestCreateTimedState(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			auth := &weavetest.Auth{}
 
-			h := NewTimedStateHandler(auth)
+			h := NewCreateTimedStateHandler(auth)
 			kv := store.MemStore()
 			bucket := NewTimedStateBucket()
 			migration.MustInitPkg(kv, packageName)
@@ -214,7 +214,7 @@ func TestDeleteTimedState(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			auth := &weavetest.Auth{}
 
-			h := NewTimedStateHandler(auth)
+			h := NewCreateTimedStateHandler(auth)
 			kv := store.MemStore()
 			bucket := NewTimedStateBucket()
 			migration.MustInitPkg(kv, packageName)
