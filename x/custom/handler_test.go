@@ -307,7 +307,7 @@ func TestCreateState(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			auth := &weavetest.Auth{}
 
-			h := NewStateHandler(auth)
+			h := NewCreateStateHandler(auth)
 			kv := store.MemStore()
 			bucket := NewStateBucket()
 			migration.MustInitPkg(kv, packageName)

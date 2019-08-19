@@ -25,7 +25,7 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
 	r = migration.SchemaMigratingRegistry(packageName, r)
 
 	r.Handle(&CreateTimedStateMsg{}, NewCreateTimedStateHandler(auth))
-	r.Handle(&CreateStateMsg{}, NewStateHandler(auth))
+	r.Handle(&CreateStateMsg{}, NewCreateStateHandler(auth))
 }
 
 // ------------------- CreateTimedState HANDLERS -------------------
@@ -151,24 +151,24 @@ func (h DeleteTimedStateHandler) Deliver(ctx weave.Context, store weave.KVStore,
 
 // ------------------- State HANDLERS -------------------
 
-// StateHandler will handle creating custom state buckets
-type StateHandler struct {
+// CreateStateHandler will handle creating custom state buckets
+type CreateStateHandler struct {
 	auth x.Authenticator
 	b    *StateBucket
 }
 
-var _ weave.Handler = StateHandler{}
+var _ weave.Handler = CreateStateHandler{}
 
-// NewStateHandler creates a handler
-func NewStateHandler(auth x.Authenticator) weave.Handler {
-	return StateHandler{
+// NewCreateStateHandler creates a handler
+func NewCreateStateHandler(auth x.Authenticator) weave.Handler {
+	return CreateStateHandler{
 		auth: auth,
 		b:    NewStateBucket(),
 	}
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h StateHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateStateMsg, error) {
+func (h CreateStateHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateStateMsg, error) {
 	var msg CreateStateMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
@@ -180,7 +180,7 @@ func (h StateHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx)
 
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
-func (h StateHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+func (h CreateStateHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
 	_, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
@@ -190,7 +190,7 @@ func (h StateHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx)
 }
 
 // Deliver creates an custom state and saves if all preconditions are met
-func (h StateHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+func (h CreateStateHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
 	msg, err := h.validate(ctx, store, tx)
 
 	if err != nil {
