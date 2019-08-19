@@ -48,6 +48,11 @@ message CreateTimedStateMsg {
   int64 delete_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
+message DeleteTimedStateMsg {
+  weave.Metadata metadata = 1;
+  bytes timed_state_id = 2 [(gogoproto.customname) = "TimedStateID"];
+}
+
 message CreateStateMsg {
   weave.Metadata metadata = 1;
   InnerState inner_state = 2;

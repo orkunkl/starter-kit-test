@@ -11,6 +11,7 @@ import (
 func init() {
 	migration.MustRegister(1, &CreateStateMsg{}, migration.NoModification)
 	migration.MustRegister(1, &CreateTimedStateMsg{}, migration.NoModification)
+	migration.MustRegister(1, &DeleteTimedStateMsg{}, migration.NoModification)
 }
 
 var _ weave.Msg = (*CreateTimedStateMsg)(nil)
@@ -38,6 +39,22 @@ func (m CreateTimedStateMsg) Validate() error {
 	} else if err := m.DeleteAt.Validate(); err != nil {
 		errs = errors.AppendField(errs, "DeleteAt", m.DeleteAt.Validate())
 	}
+	return errs
+}
+
+var _ weave.Msg = (*DeleteTimedStateMsg)(nil)
+
+// Path returns the routing path for this message.
+func (DeleteTimedStateMsg) Path() string {
+	return "custom/delete_timed_state"
+}
+
+// Validate ensures the DeleteTimedStateMsg is valid
+func (m DeleteTimedStateMsg) Validate() error {
+	var errs error
+
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+    errs = errors.AppendField(errs, "TimedStateID", validID(m.TimedStateID))
 	return errs
 }
 

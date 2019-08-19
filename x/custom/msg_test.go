@@ -131,6 +131,60 @@ func TestValidateCreateTimedStateMsg(t *testing.T) {
 	}
 }
 
+func TestValidateDeleteStateMsg(t *testing.T) {
+	cases := map[string]struct {
+		msg      weave.Msg
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &DeleteTimedStateMsg{
+				Metadata:     &weave.Metadata{Schema: 1},
+				TimedStateID: weavetest.SequenceID(1),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"TimedStateID": nil,
+			},
+		},
+		"failure missing metadata": {
+			msg: &DeleteTimedStateMsg{
+				TimedStateID: weavetest.SequenceID(1),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     errors.ErrMetadata,
+				"TimedStateID": nil,
+			},
+		},
+		"failure invalid id": {
+			msg: &DeleteTimedStateMsg{
+				Metadata:     &weave.Metadata{Schema: 1},
+				TimedStateID: []byte{7, 99, 0},
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"TimedStateID": errors.ErrInput,
+			},
+		},
+		"failure missing id": {
+			msg: &DeleteTimedStateMsg{
+				Metadata:     &weave.Metadata{Schema: 1},
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"TimedStateID": errors.ErrEmpty,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.msg.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
+
 func TestValidateCreateStateMsg(t *testing.T) {
 	cases := map[string]struct {
 		msg      weave.Msg

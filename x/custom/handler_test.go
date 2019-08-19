@@ -161,6 +161,96 @@ func TestCreateTimedState(t *testing.T) {
 	}
 }
 
+func TestDeleteTimedState(t *testing.T) {
+	meta := &weave.Metadata{Schema: 1}
+	timeStateID := weavetest.SequenceID(1)
+
+	cases := map[string]struct {
+		msg             weave.Msg
+		wantCheckErrs   map[string]*errors.Error
+		wantDeliverErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &DeleteTimedStateMsg{
+				Metadata:     meta,
+				TimedStateID: timeStateID,
+			},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"TimedStateID": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"TimedStateID": nil,
+			},
+		},
+		"failure empty": {
+			msg: &DeleteTimedStateMsg{},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     errors.ErrMetadata,
+				"TimedStateID": errors.ErrEmpty,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     errors.ErrMetadata,
+				"TimedStateID": errors.ErrEmpty,
+			},
+		},
+		"failure invalid timed state id": {
+			msg: &DeleteTimedStateMsg{
+				Metadata:     meta,
+				TimedStateID: []byte{0, 1},
+			},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"TimedStateID": errors.ErrInput,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"TimedStateID": errors.ErrInput,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			auth := &weavetest.Auth{}
+
+			h := NewTimedStateHandler(auth)
+			kv := store.MemStore()
+			bucket := NewTimedStateBucket()
+			migration.MustInitPkg(kv, packageName)
+
+			stored := &TimedState{
+				Metadata:       &weave.Metadata{Schema: 1},
+				InnerStateEnum: InnerStateEnum_CaseOne,
+				Str:            "cstm_string",
+				Byte:           []byte{0, 1},
+			}
+
+			_, err := bucket.Put(kv, timeStateID, stored)
+			if err != nil {
+				t.Fatalf("unexpected error: %+v", err)
+			}
+
+			tx := &weavetest.Tx{Msg: tc.msg}
+
+			if _, err := h.Check(nil, kv, tx); err != nil {
+				for field, wantErr := range tc.wantCheckErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			_, err = h.Deliver(nil, kv, tx)
+
+			for field, wantErr := range tc.wantDeliverErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+
+			err = bucket.Has(kv, timeStateID)
+			assert.Nil(t, err)
+		})
+	}
+}
+
 func TestCreateState(t *testing.T) {
 	meta := &weave.Metadata{Schema: 1}
 	now := weave.AsUnixTime(time.Now())
