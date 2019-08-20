@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/iov-one/weave"
+	"github.com/iov-one/weave/app"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/migration"
 	"github.com/iov-one/weave/store"
@@ -106,44 +107,29 @@ func TestCreateTimedState(t *testing.T) {
 				"DeleteAt":       errors.ErrInput,
 			},
 		},
-		"failure empty message": {
-			msg: &CreateTimedStateMsg{},
-			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":       errors.ErrMetadata,
-				"InnerStateEnum": errors.ErrState,
-				"Str":            errors.ErrEmpty,
-				"Byte":           errors.ErrEmpty,
-				"DeleteAt":       nil,
-			},
-			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":       errors.ErrMetadata,
-				"InnerStateEnum": errors.ErrState,
-				"Str":            errors.ErrEmpty,
-				"Byte":           errors.ErrEmpty,
-				"DeleteAt":       nil,
-			},
-		},
 	}
 	for testName, tc := range cases {
 		t.Run(testName, func(t *testing.T) {
 			auth := &weavetest.Auth{}
 
-			h := NewCreateTimedStateHandler(auth)
+			rt := app.NewRouter()
+			RegisterRoutes(rt, auth, &weavetest.Cron{})
+
 			kv := store.MemStore()
 			bucket := NewTimedStateBucket()
 			migration.MustInitPkg(kv, packageName)
 
 			tx := &weavetest.Tx{Msg: tc.msg}
 
-			ctx := weave.WithBlockTime(context.Background(), now.Time())
+			ctx := weave.WithBlockTime(context.Background(), time.Now().Round(time.Second))
 
-			if _, err := h.Check(ctx, kv, tx); err != nil {
+			if _, err := rt.Check(ctx, kv, tx); err != nil {
 				for field, wantErr := range tc.wantCheckErrs {
 					assert.FieldError(t, err, field, wantErr)
 				}
 			}
 
-			res, err := h.Deliver(ctx, kv, tx)
+			res, err := rt.Deliver(ctx, kv, tx)
 			if err != nil {
 				for field, wantErr := range tc.wantDeliverErrs {
 					assert.FieldError(t, err, field, wantErr)
@@ -167,6 +153,7 @@ func TestDeleteTimedState(t *testing.T) {
 
 	cases := map[string]struct {
 		msg             weave.Msg
+		shouldDeliver   bool
 		wantCheckErrs   map[string]*errors.Error
 		wantDeliverErrs map[string]*errors.Error
 	}{
@@ -175,6 +162,7 @@ func TestDeleteTimedState(t *testing.T) {
 				Metadata:     meta,
 				TimedStateID: timeStateID,
 			},
+			shouldDeliver: true,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":     nil,
 				"TimedStateID": nil,
@@ -182,17 +170,6 @@ func TestDeleteTimedState(t *testing.T) {
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":     nil,
 				"TimedStateID": nil,
-			},
-		},
-		"failure empty": {
-			msg: &DeleteTimedStateMsg{},
-			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     errors.ErrMetadata,
-				"TimedStateID": errors.ErrEmpty,
-			},
-			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     errors.ErrMetadata,
-				"TimedStateID": errors.ErrEmpty,
 			},
 		},
 		"failure invalid timed state id": {
@@ -200,6 +177,7 @@ func TestDeleteTimedState(t *testing.T) {
 				Metadata:     meta,
 				TimedStateID: []byte{0, 1},
 			},
+			shouldDeliver: false,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":     nil,
 				"TimedStateID": errors.ErrInput,
@@ -214,7 +192,8 @@ func TestDeleteTimedState(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			auth := &weavetest.Auth{}
 
-			h := NewCreateTimedStateHandler(auth)
+			rt := app.NewRouter()
+			RegisterCronRoutes(rt, auth)
 			kv := store.MemStore()
 			bucket := NewTimedStateBucket()
 			migration.MustInitPkg(kv, packageName)
@@ -233,20 +212,22 @@ func TestDeleteTimedState(t *testing.T) {
 
 			tx := &weavetest.Tx{Msg: tc.msg}
 
-			if _, err := h.Check(nil, kv, tx); err != nil {
+			if _, err := rt.Check(nil, kv, tx); err != nil {
 				for field, wantErr := range tc.wantCheckErrs {
 					assert.FieldError(t, err, field, wantErr)
 				}
 			}
 
-			_, err = h.Deliver(nil, kv, tx)
+			_, err = rt.Deliver(nil, kv, tx)
 
 			for field, wantErr := range tc.wantDeliverErrs {
 				assert.FieldError(t, err, field, wantErr)
 			}
 
-			err = bucket.Has(kv, timeStateID)
-			assert.Nil(t, err)
+			if tc.shouldDeliver {
+				err = bucket.Has(kv, timeStateID)
+				assert.IsErr(t, errors.ErrNotFound, err)
+			}
 		})
 	}
 }

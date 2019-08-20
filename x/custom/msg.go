@@ -54,7 +54,7 @@ func (m DeleteTimedStateMsg) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-    errs = errors.AppendField(errs, "TimedStateID", validID(m.TimedStateID))
+	errs = errors.AppendField(errs, "TimedStateID", validID(m.TimedStateID))
 	return errs
 }
 

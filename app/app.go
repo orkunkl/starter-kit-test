@@ -15,6 +15,7 @@ import (
 	"github.com/iov-one/weave/store/iavl"
 	"github.com/iov-one/weave/x"
 	"github.com/iov-one/weave/x/cash"
+	"github.com/iov-one/weave/x/cron"
 	"github.com/iov-one/weave/x/currency"
 	"github.com/iov-one/weave/x/multisig"
 	"github.com/iov-one/weave/x/sigs"
@@ -53,6 +54,7 @@ func Chain(authFn x.Authenticator, minFee coin.Coin) app.Decorators {
 // Router returns a default router
 func Router(authFn x.Authenticator, issuer weave.Address) *app.Router {
 	r := app.NewRouter()
+	scheduler := cron.NewScheduler(CronTaskMarshaler)
 
 	cash.RegisterRoutes(r, authFn, CashControl())
 	sigs.RegisterRoutes(r, authFn)
@@ -60,7 +62,7 @@ func Router(authFn x.Authenticator, issuer weave.Address) *app.Router {
 	currency.RegisterRoutes(r, authFn, issuer)
 	migration.RegisterRoutes(r, authFn)
 	validators.RegisterRoutes(r, authFn)
-	custom.RegisterRoutes(r, authFn)
+	custom.RegisterRoutes(r, authFn, scheduler)
 	return r
 }
 
@@ -86,6 +88,29 @@ func QueryRouter() weave.QueryRouter {
 func Stack(issuer weave.Address, minFee coin.Coin) weave.Handler {
 	authFn := Authenticator()
 	return Chain(authFn, minFee).WithHandler(Router(authFn, issuer))
+}
+
+// CronStack wires up a standard router with a cron specific decorator chain.
+// This can be passed into BaseApp.
+// Cron stack configuration is a subset of the main stack. It is using the same
+// components but not all functionalities are needed or expected (ie no message
+// fee).
+func CronStack() weave.Handler {
+	rt := app.NewRouter()
+
+	authFn := cron.Authenticator{}
+
+	// Cron is using custom router as not the same handlers are registered.
+	custom.RegisterCronRoutes(rt, authFn)
+
+	decorators := app.ChainDecorators(
+		utils.NewLogging(),
+		utils.NewRecovery(),
+		utils.NewKeyTagger(),
+		utils.NewActionTagger(),
+		// No fee decorators.
+	)
+	return decorators.WithHandler(rt)
 }
 
 // CommitKVStore returns an initialized KVStore that persists
@@ -122,6 +147,7 @@ func Application(name string, h weave.Handler,
 		return app.BaseApp{}, errors.Wrap(err, "cannot create database instance")
 	}
 	store := app.NewStoreApp(name, kv, QueryRouter(), ctx)
-	base := app.NewBaseApp(store, tx, h, nil, debug)
+	ticker := cron.NewTicker(CronStack(), CronTaskMarshaler)
+	base := app.NewBaseApp(store, tx, h, ticker, debug)
 	return base, nil
 }

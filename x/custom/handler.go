@@ -21,28 +21,39 @@ func RegisterQuery(qr weave.QueryRouter) {
 }
 
 // RegisterRoutes registers handlers for message processing.
-func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
+func RegisterRoutes(r weave.Registry, auth x.Authenticator, scheduler weave.Scheduler) {
 	r = migration.SchemaMigratingRegistry(packageName, r)
 
-	r.Handle(&CreateTimedStateMsg{}, NewCreateTimedStateHandler(auth))
+	r.Handle(&CreateTimedStateMsg{}, NewCreateTimedStateHandler(auth, scheduler))
 	r.Handle(&CreateStateMsg{}, NewCreateStateHandler(auth))
+}
+
+// RegisterCronRoutes registers routes that are not exposed to
+// routers
+func RegisterCronRoutes(
+	r weave.Registry,
+	auth x.Authenticator,
+) {
+	r.Handle(&DeleteTimedStateMsg{}, newDeleteTimedStateHandler(auth))
 }
 
 // ------------------- CreateTimedState HANDLERS -------------------
 
 // CreateTimedStateHandler will handle creating custom indexed state buckets
 type CreateTimedStateHandler struct {
-	auth x.Authenticator
-	b    *TimedStateBucket
+	auth      x.Authenticator
+	b         *TimedStateBucket
+	scheduler weave.Scheduler
 }
 
 var _ weave.Handler = CreateTimedStateHandler{}
 
 // NewCreateTimedStateHandler creates a handler
-func NewCreateTimedStateHandler(auth x.Authenticator) weave.Handler {
+func NewCreateTimedStateHandler(auth x.Authenticator, scheduler weave.Scheduler) weave.Handler {
 	return CreateTimedStateHandler{
-		auth: auth,
-		b:    NewTimedStateBucket(),
+		auth:      auth,
+		b:         NewTimedStateBucket(),
+		scheduler: scheduler,
 	}
 }
 
@@ -104,8 +115,8 @@ type DeleteTimedStateHandler struct {
 
 var _ weave.Handler = DeleteTimedStateHandler{}
 
-// NewDeleteTimedStateHandler creates a handler
-func NewDeleteTimedStateHandler(auth x.Authenticator) weave.Handler {
+// newDeleteTimedStateHandler creates a handler
+func newDeleteTimedStateHandler(auth x.Authenticator) weave.Handler {
 	return DeleteTimedStateHandler{
 		auth: auth,
 		b:    NewTimedStateBucket(),

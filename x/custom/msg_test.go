@@ -167,7 +167,7 @@ func TestValidateDeleteStateMsg(t *testing.T) {
 		},
 		"failure missing id": {
 			msg: &DeleteTimedStateMsg{
-				Metadata:     &weave.Metadata{Schema: 1},
+				Metadata: &weave.Metadata{Schema: 1},
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,

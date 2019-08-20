@@ -38,6 +38,26 @@ message Tx {
     currency.CreateMsg currency_create_msg = 59;
     migration.UpgradeSchemaMsg migration_upgrade_schema_msg = 69;
     custom.CreateTimedStateMsg custom_create_timed_state_msg = 100;
-    custom.CreateStateMsg custom_create_state_msg = 101;
+    custom.CreateStateMsg custom_create_state_msg = 102;
+  }
+}
+
+// CronTask is a format used by the CronMarshaler to marshal and unmarshal cron
+// task.
+//
+// When there is a gap in message sequence numbers - that most likely means some
+// old fields got deprecated. This is done to maintain binary compatibility.
+message CronTask {
+  // Authenticators contains a list of conditions that authenticate execution
+  // of this task.
+  // This is one of the main differences between the CronTask and Tx entities.
+  // CronTask is created interanlly and does not have to be signed. Because we
+  // use the same handlers as for the Tx to process a cron task, we must
+  // provide authentication method. This attribute contains all authentication
+  // conditions required for execution, that will be inserted into the context.
+  repeated bytes authenticators = 1 [(gogoproto.casttype) = "github.com/iov-one/weave.Condition"];
+  // Use the same indexes for the messages as the Tx message.
+  oneof sum {
+    custom.DeleteTimedStateMsg custom_delete_timed_state_msg = 101;
   }
 }
