@@ -65,7 +65,7 @@ func (h CreateTimedStateHandler) validate(ctx weave.Context, db weave.KVStore, t
 		return nil, errors.Wrap(err, "load msg")
 	}
 
-	if msg.DeleteAt != 0 && weave.InThePast(ctx, msg.DeleteAt.Time()) == true {
+	if msg.DeleteAt != 0 && weave.InThePast(ctx, msg.DeleteAt.Time()) {
 		return nil, errors.AppendField(nil, "DeleteAt", errors.ErrInput)
 	}
 

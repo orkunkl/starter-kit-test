@@ -21,7 +21,6 @@ import (
 var (
 	source     = makePrivKey("1234567890")
 	dst        = makePrivKey("F00BA411").PublicKey().Address()
-	guest      = makePrivKey("00CAFE00F00D").PublicKey().Address()
 	randomAddr = makePrivKey("00CAFE00F00D").PublicKey().Address()
 )
 

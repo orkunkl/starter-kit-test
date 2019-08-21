@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/iov-one/weave"
-	customd "github.com/iov-one/weave-starter-kit/app"
+	. "github.com/iov-one/weave-starter-kit"
+	customd "github.com/iov-one/weave-starter-kit/cmd/customd/app"
 	"github.com/iov-one/weave/commands"
 	"github.com/iov-one/weave/commands/server"
 	"github.com/tendermint/tendermint/libs/log"
@@ -69,7 +69,7 @@ func main() {
 	case "testgen":
 		err = commands.TestGenCmd(customd.Examples(), rest)
 	case "version":
-		fmt.Println(weave.Version)
+		fmt.Println(Version)
 	default:
 		err = fmt.Errorf("unknown command: %s", cmd)
 	}

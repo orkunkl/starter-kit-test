@@ -21,4 +21,4 @@ coverage
 .gitian-builder-cache/
  
 # App
-customd
+/customd

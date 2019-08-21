@@ -77,21 +77,6 @@ func (m *State) Copy() orm.CloneableData {
 	}
 }
 
-// isGenID ensures that the ID is 8 byte input.
-// if allowEmpty is set, we also allow empty
-func isGenID(id []byte, allowEmpty bool) error {
-	if len(id) == 0 {
-		if allowEmpty {
-			return nil
-		}
-		return errors.Wrap(errors.ErrEmpty, "required")
-	}
-	if len(id) != 8 {
-		return errors.Wrap(errors.ErrInput, "must be 8 bytes")
-	}
-	return nil
-}
-
 func copyBytes(in []byte) []byte {
 	if in == nil {
 		return nil

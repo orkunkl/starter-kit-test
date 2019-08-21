@@ -212,13 +212,13 @@ func TestDeleteTimedState(t *testing.T) {
 
 			tx := &weavetest.Tx{Msg: tc.msg}
 
-			if _, err := rt.Check(nil, kv, tx); err != nil {
+			if _, err := rt.Check(context.TODO(), kv, tx); err != nil {
 				for field, wantErr := range tc.wantCheckErrs {
 					assert.FieldError(t, err, field, wantErr)
 				}
 			}
 
-			_, err = rt.Deliver(nil, kv, tx)
+			_, err = rt.Deliver(context.TODO(), kv, tx)
 
 			for field, wantErr := range tc.wantDeliverErrs {
 				assert.FieldError(t, err, field, wantErr)
@@ -295,13 +295,13 @@ func TestCreateState(t *testing.T) {
 
 			tx := &weavetest.Tx{Msg: tc.msg}
 
-			if _, err := h.Check(nil, kv, tx); err != nil {
+			if _, err := h.Check(context.TODO(), kv, tx); err != nil {
 				for field, wantErr := range tc.wantCheckErrs {
 					assert.FieldError(t, err, field, wantErr)
 				}
 			}
 
-			res, err := h.Deliver(nil, kv, tx)
+			res, err := h.Deliver(context.TODO(), kv, tx)
 			for field, wantErr := range tc.wantDeliverErrs {
 				assert.FieldError(t, err, field, wantErr)
 			}

@@ -26,6 +26,7 @@ env:
 
 script:
 - make protolint;
+- make lint;
 - make test;
 # - if [[ "$TRAVIS_GO_VERSION" == "$MAIN_GO_VERSION" ]]; then
 #       make cover;
