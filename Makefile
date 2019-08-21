@@ -21,11 +21,8 @@ WEAVEDIR=$(shell go list -m -f '{{.Dir}}' github.com/iov-one/weave)
 
 all: import-spec test lint install
 
-build:
-	go build $(BUILD_FLAGS) -o $(BUILDOUT) ./cmd/customd
-
 dist:
-	cd cmd/bnsd && $(MAKE) dist
+	cd cmd/customd && $(MAKE) dist
 
 install:
 	for ex in $(TOOLS); do cd $$ex && make install && cd -; done
