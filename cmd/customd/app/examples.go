@@ -11,7 +11,6 @@ import (
 	"github.com/iov-one/weave/commands"
 	"github.com/iov-one/weave/crypto"
 	"github.com/iov-one/weave/x/cash"
-	"github.com/iov-one/weave/x/currency"
 	"github.com/iov-one/weave/x/sigs"
 )
 
@@ -47,11 +46,6 @@ func Examples() []commands.Example {
 		Coins: []*coin.Coin{
 			{Whole: 150, Fractional: 567000, Ticker: ticker},
 		},
-	}
-
-	token := &currency.TokenInfo{
-		Metadata: &weave.Metadata{Schema: 1},
-		Name:     "Custom token",
 	}
 
 	pub := source.PublicKey()
@@ -97,7 +91,6 @@ func Examples() []commands.Example {
 	fmt.Printf("Address: %s\n", addr)
 	return []commands.Example{
 		{Filename: "wallet", Obj: wallet},
-		{Filename: "token", Obj: token},
 		{Filename: "priv_key", Obj: source},
 		{Filename: "pub_key", Obj: pub},
 		{Filename: "user", Obj: user},

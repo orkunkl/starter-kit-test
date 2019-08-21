@@ -6,7 +6,6 @@ App uses weave modules defined below:
   - cash
   - sigs
   - multisig
-  - currency
   - migration
   - validators
   - custom

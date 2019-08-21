@@ -4,7 +4,6 @@ package app;
 
 import "github.com/iov-one/weave/migration/codec.proto";
 import "github.com/iov-one/weave/x/cash/codec.proto";
-import "github.com/iov-one/weave/x/currency/codec.proto";
 import "github.com/iov-one/weave/x/multisig/codec.proto";
 import "github.com/iov-one/weave/x/sigs/codec.proto";
 import "github.com/iov-one/weave/x/validators/codec.proto";
@@ -35,7 +34,6 @@ message Tx {
     multisig.CreateMsg create_contract_msg = 56;
     multisig.UpdateMsg update_contract_msg = 57;
     validators.ApplyDiffMsg validators_apply_diff_msg = 58;
-    currency.CreateMsg currency_create_msg = 59;
     migration.UpgradeSchemaMsg migration_upgrade_schema_msg = 69;
     custom.CreateTimedStateMsg custom_create_timed_state_msg = 100;
     custom.CreateStateMsg custom_create_state_msg = 102;

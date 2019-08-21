@@ -12,10 +12,8 @@ import (
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/commands/server"
 	"github.com/iov-one/weave/crypto"
-
 	"github.com/iov-one/weave/migration"
 	"github.com/iov-one/weave/x/cash"
-	"github.com/iov-one/weave/x/currency"
 	"github.com/iov-one/weave/x/multisig"
 	"github.com/iov-one/weave/x/validators"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -115,7 +113,6 @@ func DecorateApp(application app.BaseApp, logger log.Logger) app.BaseApp {
 		&migration.Initializer{},
 		&cash.Initializer{},
 		&multisig.Initializer{},
-		&currency.Initializer{},
 		&validators.Initializer{},
 	))
 	application.WithLogger(logger)
