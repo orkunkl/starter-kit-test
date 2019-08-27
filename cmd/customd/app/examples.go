@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/hex"
-	"fmt"
 	"strings"
 
 	"github.com/iov-one/weave"
@@ -88,7 +87,6 @@ func Examples() []commands.Example {
 		Address:    randomAddr,
 	}
 
-	fmt.Printf("Address: %s\n", addr)
 	return []commands.Example{
 		{Filename: "wallet", Obj: wallet},
 		{Filename: "priv_key", Obj: source},

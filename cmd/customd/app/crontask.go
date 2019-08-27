@@ -6,8 +6,8 @@ import (
 	"github.com/iov-one/weave/errors"
 )
 
-// CronTaskMarshaler is a task marshaler implementation to be used by the bnsd
-// application when dealing with scheduled tasks.
+// CronTaskMarshaler is a task marshaler implementation to be used by the weave
+// applications when dealing with scheduled tasks.
 //
 // This implementation relies on the CronTask protobuf declaration.
 var CronTaskMarshaler = taskMarshaler{}
