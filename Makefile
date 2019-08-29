@@ -53,11 +53,6 @@ mod:
 		-coverpkg=github.com/iov-one/weave/cmd/customd/app,\
 		-coverprofile=coverage/custonmd_scenarios.out \
 		github.com/iov-one/weave-starter-kit/cmd/bnsd/scenarios
-# TODO \
-	go test -mod=readonly -covermode=$(MODE) \
-		-coverpkg=github.com/iov-one/weave-starter-kit/cmd/bnsd/app,github.com/iov-one/weave-starter-kit/cmd/bnsd/client,github.com/iov-one/weave-starter-kit/app \
-		-coverprofile=coverage/bnsd_client.out \
-		github.com/iov-one/weave-starter-kit/cmd/bnsd/client
 cover:
 	@# TODO write github.com/iov-one/weave-starter-kit/cmd/bnsd/client when implemented
 	@go test -mod=readonly -covermode=$(MODE) \
@@ -65,6 +60,10 @@ cover:
 		-coverprofile=coverage/customd_app.out \
 		github.com/iov-one/weave-starter-kit/cmd/customd/app
 		cat coverage/*.out > coverage/coverage.txt
+	@go test -mod=readonly -covermode=$(MODE) \
+		-coverpkg=github.com/iov-one/weave-starter-kit/cmd/customd/app,github.com/iov-one/weave-starter-kit/cmd/customd/client \
+		-coverprofile=coverage/customd_client.out \
+		github.com/iov-one/weave-starter-kit/cmd/customd/client
 
 novendor:
 	@rm -rf ./vendor

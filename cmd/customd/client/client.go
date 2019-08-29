@@ -408,7 +408,7 @@ func userKeyToAddr(key []byte) weave.Address {
 
 // NextNonce queries the blockchain for the next nonce
 // returns 0 if the address never used
-func (cc CustomClient) NextNonce(addr weave.Address) (int64, error) {
+func (cc *CustomClient) NextNonce(addr weave.Address) (int64, error) {
 	user, err := cc.GetUser(addr)
 	if err != nil {
 		return 0, err

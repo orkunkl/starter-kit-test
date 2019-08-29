@@ -10,4 +10,4 @@ App uses weave modules defined below:
   - validators
   - custom
 */
-package app
+package customd

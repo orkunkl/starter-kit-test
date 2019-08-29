@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package app;
+package customd;
 
 import "github.com/iov-one/weave/migration/codec.proto";
 import "github.com/iov-one/weave/x/cash/codec.proto";
@@ -31,8 +31,8 @@ message Tx {
   // sum defines over all allowed messages on this chain.
   oneof sum {
     cash.SendMsg cash_send_msg = 51;
-    multisig.CreateMsg create_contract_msg = 56;
-    multisig.UpdateMsg update_contract_msg = 57;
+    multisig.CreateMsg multisig_create_msg = 56;
+    multisig.UpdateMsg multisig_update_msg = 57;
     validators.ApplyDiffMsg validators_apply_diff_msg = 58;
     migration.UpgradeSchemaMsg migration_upgrade_schema_msg = 69;
     custom.CreateTimedStateMsg custom_create_timed_state_msg = 100;

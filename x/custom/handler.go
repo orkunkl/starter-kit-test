@@ -16,8 +16,8 @@ const (
 
 // RegisterQuery registers buckets for querying.
 func RegisterQuery(qr weave.QueryRouter) {
-	NewTimedStateBucket().Register("timedStates", qr)
-	NewStateBucket().Register("states", qr)
+	NewTimedStateBucket().Register("customTimedStates", qr)
+	NewStateBucket().Register("customStates", qr)
 }
 
 // RegisterRoutes registers handlers for message processing.

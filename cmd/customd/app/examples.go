@@ -1,4 +1,4 @@
-package app
+package customd
 
 import (
 	"encoding/hex"
