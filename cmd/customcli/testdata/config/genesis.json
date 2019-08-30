@@ -10,6 +10,15 @@
             "ticker": "CSTM"
           }
         ]
+      },
+      {
+        "address": "C3923DCF2449F6AD09A2C39E90B94D5DBC4A02B2",
+        "coins": [
+          {
+            "whole": 123456789,
+            "ticker": "CSTM"
+          }
+        ]
       }
     ],
 		"currencies": [
