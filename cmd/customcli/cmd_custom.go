@@ -75,7 +75,7 @@ Create a transaction for creating a timed custom state.
 	case 2:
 		ise = custom.InnerStateEnum_CaseTwo
 	default:
-		return fmt.Errorf("unknown inner state enumeration %s", innerStateEnum)
+		return fmt.Errorf("unknown inner state enumeration = %d, must be 0, 1 or 2", innerStateEnum)
 	}
 
 	da := weave.AsUnixTime(time.Unix(*deleteAt, 0))
