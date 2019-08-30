@@ -34,10 +34,24 @@ message Tx {
     multisig.CreateMsg multisig_create_msg = 56;
     multisig.UpdateMsg multisig_update_msg = 57;
     validators.ApplyDiffMsg validators_apply_diff_msg = 58;
+    ExecuteBatchMsg execute_batch_msg = 60;
     migration.UpgradeSchemaMsg migration_upgrade_schema_msg = 69;
     custom.CreateTimedStateMsg custom_create_timed_state_msg = 100;
     custom.CreateStateMsg custom_create_state_msg = 102;
   }
+}
+
+// ExecuteBatchMsg encapsulates multiple messages to support batch transaction
+message ExecuteBatchMsg {
+  message Union {
+    // No recursive batches!
+    oneof sum {
+      cash.SendMsg cash_send_msg = 51;
+      multisig.CreateMsg multisig_create_msg = 56;
+      multisig.UpdateMsg multisig_update_msg = 57;
+    }
+  }
+  repeated Union messages = 1 [(gogoproto.nullable) = false];
 }
 
 // CronTask is a format used by the CronMarshaler to marshal and unmarshal cron

@@ -55,6 +55,7 @@ type Tx struct {
 	//	*Tx_MultisigCreateMsg
 	//	*Tx_MultisigUpdateMsg
 	//	*Tx_ValidatorsApplyDiffMsg
+	//	*Tx_ExecuteBatchMsg
 	//	*Tx_MigrationUpgradeSchemaMsg
 	//	*Tx_CustomCreateTimedStateMsg
 	//	*Tx_CustomCreateStateMsg
@@ -112,6 +113,9 @@ type Tx_MultisigUpdateMsg struct {
 type Tx_ValidatorsApplyDiffMsg struct {
 	ValidatorsApplyDiffMsg *validators.ApplyDiffMsg `protobuf:"bytes,58,opt,name=validators_apply_diff_msg,json=validatorsApplyDiffMsg,proto3,oneof"`
 }
+type Tx_ExecuteBatchMsg struct {
+	ExecuteBatchMsg *ExecuteBatchMsg `protobuf:"bytes,60,opt,name=execute_batch_msg,json=executeBatchMsg,proto3,oneof"`
+}
 type Tx_MigrationUpgradeSchemaMsg struct {
 	MigrationUpgradeSchemaMsg *migration.UpgradeSchemaMsg `protobuf:"bytes,69,opt,name=migration_upgrade_schema_msg,json=migrationUpgradeSchemaMsg,proto3,oneof"`
 }
@@ -126,6 +130,7 @@ func (*Tx_CashSendMsg) isTx_Sum()               {}
 func (*Tx_MultisigCreateMsg) isTx_Sum()         {}
 func (*Tx_MultisigUpdateMsg) isTx_Sum()         {}
 func (*Tx_ValidatorsApplyDiffMsg) isTx_Sum()    {}
+func (*Tx_ExecuteBatchMsg) isTx_Sum()           {}
 func (*Tx_MigrationUpgradeSchemaMsg) isTx_Sum() {}
 func (*Tx_CustomCreateTimedStateMsg) isTx_Sum() {}
 func (*Tx_CustomCreateStateMsg) isTx_Sum()      {}
@@ -186,6 +191,13 @@ func (m *Tx) GetValidatorsApplyDiffMsg() *validators.ApplyDiffMsg {
 	return nil
 }
 
+func (m *Tx) GetExecuteBatchMsg() *ExecuteBatchMsg {
+	if x, ok := m.GetSum().(*Tx_ExecuteBatchMsg); ok {
+		return x.ExecuteBatchMsg
+	}
+	return nil
+}
+
 func (m *Tx) GetMigrationUpgradeSchemaMsg() *migration.UpgradeSchemaMsg {
 	if x, ok := m.GetSum().(*Tx_MigrationUpgradeSchemaMsg); ok {
 		return x.MigrationUpgradeSchemaMsg
@@ -214,6 +226,7 @@ func (*Tx) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, fun
 		(*Tx_MultisigCreateMsg)(nil),
 		(*Tx_MultisigUpdateMsg)(nil),
 		(*Tx_ValidatorsApplyDiffMsg)(nil),
+		(*Tx_ExecuteBatchMsg)(nil),
 		(*Tx_MigrationUpgradeSchemaMsg)(nil),
 		(*Tx_CustomCreateTimedStateMsg)(nil),
 		(*Tx_CustomCreateStateMsg)(nil),
@@ -242,6 +255,11 @@ func _Tx_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
 	case *Tx_ValidatorsApplyDiffMsg:
 		_ = b.EncodeVarint(58<<3 | proto.WireBytes)
 		if err := b.EncodeMessage(x.ValidatorsApplyDiffMsg); err != nil {
+			return err
+		}
+	case *Tx_ExecuteBatchMsg:
+		_ = b.EncodeVarint(60<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.ExecuteBatchMsg); err != nil {
 			return err
 		}
 	case *Tx_MigrationUpgradeSchemaMsg:
@@ -301,6 +319,14 @@ func _Tx_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bo
 		err := b.DecodeMessage(msg)
 		m.Sum = &Tx_ValidatorsApplyDiffMsg{msg}
 		return true, err
+	case 60: // sum.execute_batch_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(ExecuteBatchMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &Tx_ExecuteBatchMsg{msg}
+		return true, err
 	case 69: // sum.migration_upgrade_schema_msg
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
@@ -354,6 +380,11 @@ func _Tx_OneofSizer(msg proto.Message) (n int) {
 		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
+	case *Tx_ExecuteBatchMsg:
+		s := proto.Size(x.ExecuteBatchMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
 	case *Tx_MigrationUpgradeSchemaMsg:
 		s := proto.Size(x.MigrationUpgradeSchemaMsg)
 		n += 2 // tag and wire
@@ -366,6 +397,235 @@ func _Tx_OneofSizer(msg proto.Message) (n int) {
 		n += s
 	case *Tx_CustomCreateStateMsg:
 		s := proto.Size(x.CustomCreateStateMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// ExecuteBatchMsg encapsulates multiple messages to support batch transaction
+type ExecuteBatchMsg struct {
+	Messages []ExecuteBatchMsg_Union `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages"`
+}
+
+func (m *ExecuteBatchMsg) Reset()         { *m = ExecuteBatchMsg{} }
+func (m *ExecuteBatchMsg) String() string { return proto.CompactTextString(m) }
+func (*ExecuteBatchMsg) ProtoMessage()    {}
+func (*ExecuteBatchMsg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f41b5febe5f4cdb9, []int{1}
+}
+func (m *ExecuteBatchMsg) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ExecuteBatchMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ExecuteBatchMsg.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ExecuteBatchMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExecuteBatchMsg.Merge(m, src)
+}
+func (m *ExecuteBatchMsg) XXX_Size() int {
+	return m.Size()
+}
+func (m *ExecuteBatchMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExecuteBatchMsg.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ExecuteBatchMsg proto.InternalMessageInfo
+
+func (m *ExecuteBatchMsg) GetMessages() []ExecuteBatchMsg_Union {
+	if m != nil {
+		return m.Messages
+	}
+	return nil
+}
+
+type ExecuteBatchMsg_Union struct {
+	// No recursive batches!
+	//
+	// Types that are valid to be assigned to Sum:
+	//	*ExecuteBatchMsg_Union_CashSendMsg
+	//	*ExecuteBatchMsg_Union_MultisigCreateMsg
+	//	*ExecuteBatchMsg_Union_MultisigUpdateMsg
+	Sum isExecuteBatchMsg_Union_Sum `protobuf_oneof:"sum"`
+}
+
+func (m *ExecuteBatchMsg_Union) Reset()         { *m = ExecuteBatchMsg_Union{} }
+func (m *ExecuteBatchMsg_Union) String() string { return proto.CompactTextString(m) }
+func (*ExecuteBatchMsg_Union) ProtoMessage()    {}
+func (*ExecuteBatchMsg_Union) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f41b5febe5f4cdb9, []int{1, 0}
+}
+func (m *ExecuteBatchMsg_Union) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ExecuteBatchMsg_Union) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ExecuteBatchMsg_Union.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ExecuteBatchMsg_Union) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExecuteBatchMsg_Union.Merge(m, src)
+}
+func (m *ExecuteBatchMsg_Union) XXX_Size() int {
+	return m.Size()
+}
+func (m *ExecuteBatchMsg_Union) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExecuteBatchMsg_Union.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ExecuteBatchMsg_Union proto.InternalMessageInfo
+
+type isExecuteBatchMsg_Union_Sum interface {
+	isExecuteBatchMsg_Union_Sum()
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
+
+type ExecuteBatchMsg_Union_CashSendMsg struct {
+	CashSendMsg *cash.SendMsg `protobuf:"bytes,51,opt,name=cash_send_msg,json=cashSendMsg,proto3,oneof"`
+}
+type ExecuteBatchMsg_Union_MultisigCreateMsg struct {
+	MultisigCreateMsg *multisig.CreateMsg `protobuf:"bytes,56,opt,name=multisig_create_msg,json=multisigCreateMsg,proto3,oneof"`
+}
+type ExecuteBatchMsg_Union_MultisigUpdateMsg struct {
+	MultisigUpdateMsg *multisig.UpdateMsg `protobuf:"bytes,57,opt,name=multisig_update_msg,json=multisigUpdateMsg,proto3,oneof"`
+}
+
+func (*ExecuteBatchMsg_Union_CashSendMsg) isExecuteBatchMsg_Union_Sum()       {}
+func (*ExecuteBatchMsg_Union_MultisigCreateMsg) isExecuteBatchMsg_Union_Sum() {}
+func (*ExecuteBatchMsg_Union_MultisigUpdateMsg) isExecuteBatchMsg_Union_Sum() {}
+
+func (m *ExecuteBatchMsg_Union) GetSum() isExecuteBatchMsg_Union_Sum {
+	if m != nil {
+		return m.Sum
+	}
+	return nil
+}
+
+func (m *ExecuteBatchMsg_Union) GetCashSendMsg() *cash.SendMsg {
+	if x, ok := m.GetSum().(*ExecuteBatchMsg_Union_CashSendMsg); ok {
+		return x.CashSendMsg
+	}
+	return nil
+}
+
+func (m *ExecuteBatchMsg_Union) GetMultisigCreateMsg() *multisig.CreateMsg {
+	if x, ok := m.GetSum().(*ExecuteBatchMsg_Union_MultisigCreateMsg); ok {
+		return x.MultisigCreateMsg
+	}
+	return nil
+}
+
+func (m *ExecuteBatchMsg_Union) GetMultisigUpdateMsg() *multisig.UpdateMsg {
+	if x, ok := m.GetSum().(*ExecuteBatchMsg_Union_MultisigUpdateMsg); ok {
+		return x.MultisigUpdateMsg
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*ExecuteBatchMsg_Union) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _ExecuteBatchMsg_Union_OneofMarshaler, _ExecuteBatchMsg_Union_OneofUnmarshaler, _ExecuteBatchMsg_Union_OneofSizer, []interface{}{
+		(*ExecuteBatchMsg_Union_CashSendMsg)(nil),
+		(*ExecuteBatchMsg_Union_MultisigCreateMsg)(nil),
+		(*ExecuteBatchMsg_Union_MultisigUpdateMsg)(nil),
+	}
+}
+
+func _ExecuteBatchMsg_Union_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*ExecuteBatchMsg_Union)
+	// sum
+	switch x := m.Sum.(type) {
+	case *ExecuteBatchMsg_Union_CashSendMsg:
+		_ = b.EncodeVarint(51<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.CashSendMsg); err != nil {
+			return err
+		}
+	case *ExecuteBatchMsg_Union_MultisigCreateMsg:
+		_ = b.EncodeVarint(56<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.MultisigCreateMsg); err != nil {
+			return err
+		}
+	case *ExecuteBatchMsg_Union_MultisigUpdateMsg:
+		_ = b.EncodeVarint(57<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.MultisigUpdateMsg); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("ExecuteBatchMsg_Union.Sum has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _ExecuteBatchMsg_Union_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*ExecuteBatchMsg_Union)
+	switch tag {
+	case 51: // sum.cash_send_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(cash.SendMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &ExecuteBatchMsg_Union_CashSendMsg{msg}
+		return true, err
+	case 56: // sum.multisig_create_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(multisig.CreateMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &ExecuteBatchMsg_Union_MultisigCreateMsg{msg}
+		return true, err
+	case 57: // sum.multisig_update_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(multisig.UpdateMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &ExecuteBatchMsg_Union_MultisigUpdateMsg{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _ExecuteBatchMsg_Union_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*ExecuteBatchMsg_Union)
+	// sum
+	switch x := m.Sum.(type) {
+	case *ExecuteBatchMsg_Union_CashSendMsg:
+		s := proto.Size(x.CashSendMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *ExecuteBatchMsg_Union_MultisigCreateMsg:
+		s := proto.Size(x.MultisigCreateMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *ExecuteBatchMsg_Union_MultisigUpdateMsg:
+		s := proto.Size(x.MultisigUpdateMsg)
 		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
@@ -401,7 +661,7 @@ func (m *CronTask) Reset()         { *m = CronTask{} }
 func (m *CronTask) String() string { return proto.CompactTextString(m) }
 func (*CronTask) ProtoMessage()    {}
 func (*CronTask) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f41b5febe5f4cdb9, []int{1}
+	return fileDescriptor_f41b5febe5f4cdb9, []int{2}
 }
 func (m *CronTask) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -520,48 +780,55 @@ func _CronTask_OneofSizer(msg proto.Message) (n int) {
 
 func init() {
 	proto.RegisterType((*Tx)(nil), "customd.Tx")
+	proto.RegisterType((*ExecuteBatchMsg)(nil), "customd.ExecuteBatchMsg")
+	proto.RegisterType((*ExecuteBatchMsg_Union)(nil), "customd.ExecuteBatchMsg.Union")
 	proto.RegisterType((*CronTask)(nil), "customd.CronTask")
 }
 
 func init() { proto.RegisterFile("cmd/customd/app/codec.proto", fileDescriptor_f41b5febe5f4cdb9) }
 
 var fileDescriptor_f41b5febe5f4cdb9 = []byte{
-	// 554 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xcd, 0x8e, 0xd3, 0x30,
-	0x14, 0x85, 0x9b, 0xf9, 0x81, 0x91, 0xcb, 0x20, 0xe1, 0x19, 0x0d, 0x69, 0x07, 0x42, 0xe9, 0x02,
-	0x55, 0x42, 0x38, 0xa2, 0xdd, 0x00, 0x3b, 0xda, 0x19, 0x04, 0x0b, 0x40, 0xea, 0xcf, 0x96, 0xc8,
-	0x13, 0x3b, 0xa9, 0x45, 0x13, 0x47, 0xb1, 0x53, 0xca, 0x5b, 0xf0, 0x1c, 0x3c, 0x06, 0x2b, 0x96,
-	0xb3, 0x64, 0x85, 0x50, 0xfb, 0x16, 0xac, 0x50, 0x9c, 0x38, 0x4d, 0xaa, 0x76, 0xc4, 0xce, 0xbe,
-	0xe7, 0xdc, 0xef, 0xc6, 0x27, 0x36, 0x38, 0x77, 0x03, 0x62, 0xbb, 0x89, 0x90, 0x3c, 0x20, 0x36,
-	0x8e, 0x22, 0xdb, 0xe5, 0x84, 0xba, 0x28, 0x8a, 0xb9, 0xe4, 0xf0, 0x76, 0x2e, 0x34, 0x91, 0xcf,
-	0xe4, 0x34, 0xb9, 0x42, 0x2e, 0x0f, 0x6c, 0xc6, 0xe7, 0xcf, 0x78, 0x48, 0xed, 0x2f, 0x14, 0xcf,
-	0xa9, 0x1d, 0x30, 0x3f, 0xc6, 0x92, 0xf1, 0xb0, 0xdc, 0xd8, 0x7c, 0xba, 0xd3, 0xbf, 0xb0, 0x5d,
-	0x2c, 0xa6, 0x15, 0xb3, 0x7d, 0x83, 0x39, 0x48, 0x66, 0x92, 0x09, 0xe6, 0xff, 0x37, 0x5d, 0x30,
-	0x5f, 0x54, 0xcc, 0xcf, 0x6f, 0x30, 0xcf, 0xf1, 0x8c, 0x11, 0x2c, 0x79, 0x5c, 0x6d, 0x39, 0xf5,
-	0xb9, 0xcf, 0xd5, 0xd2, 0x4e, 0x57, 0xba, 0xba, 0xc8, 0x73, 0x2a, 0x7b, 0xdb, 0xdf, 0x0f, 0xc1,
-	0xde, 0x78, 0x01, 0x1f, 0x83, 0x03, 0x8f, 0x52, 0x61, 0x1a, 0x2d, 0xa3, 0x53, 0xef, 0x1e, 0xa3,
-	0xf4, 0x90, 0xe8, 0x0d, 0xa5, 0xef, 0x42, 0x8f, 0x0f, 0x95, 0x04, 0xbb, 0x00, 0x08, 0xe6, 0x87,
-	0x58, 0x26, 0x31, 0x15, 0xe6, 0x5e, 0x6b, 0xbf, 0x53, 0xef, 0x42, 0x94, 0x7e, 0x2f, 0x1a, 0x49,
-	0x32, 0xd2, 0xd2, 0xb0, 0xe4, 0x82, 0x4d, 0x70, 0xa4, 0x13, 0x30, 0x0f, 0x5a, 0xfb, 0x9d, 0x3b,
-	0xc3, 0x62, 0x0f, 0x7b, 0xe0, 0x38, 0x9d, 0xe2, 0x08, 0x1a, 0x12, 0x27, 0x10, 0xbe, 0xd9, 0x2b,
-	0xcf, 0x1e, 0xd1, 0x90, 0xbc, 0x17, 0xfe, 0xdb, 0xda, 0xb0, 0x9e, 0xee, 0xf3, 0x2d, 0xbc, 0x04,
-	0x27, 0x1a, 0xe0, 0xb8, 0x31, 0xc5, 0x92, 0xaa, 0xd6, 0x17, 0xaa, 0xf5, 0x04, 0x69, 0x0d, 0x0d,
-	0x94, 0x96, 0x01, 0xee, 0xe9, 0x6a, 0x51, 0xac, 0x60, 0x92, 0x88, 0x68, 0xcc, 0xcb, 0x4d, 0xcc,
-	0x44, 0x69, 0x1b, 0x98, 0xa2, 0x08, 0x27, 0xa0, 0xb1, 0xfe, 0x05, 0x0e, 0x8e, 0xa2, 0xd9, 0x57,
-	0x87, 0x30, 0xcf, 0x53, 0xb0, 0x57, 0x0a, 0x66, 0xa2, 0xb5, 0x03, 0xbd, 0x4e, 0x1d, 0x17, 0xcc,
-	0xf3, 0x32, 0xe2, 0xd9, 0x5a, 0x2a, 0x2b, 0xf0, 0x13, 0x78, 0x50, 0x5c, 0x4b, 0x27, 0x89, 0xfc,
-	0x18, 0x13, 0xea, 0x08, 0x77, 0x4a, 0x03, 0xac, 0xc8, 0x97, 0x8a, 0x7c, 0x8e, 0x0a, 0x13, 0x9a,
-	0x64, 0xa6, 0x91, 0xf2, 0x64, 0xf0, 0x46, 0xa1, 0x6e, 0x8a, 0xd0, 0x01, 0x0f, 0xb3, 0x9b, 0xa0,
-	0x23, 0x94, 0x2c, 0xa0, 0xc4, 0x11, 0x52, 0xe7, 0x40, 0xf2, 0x01, 0x99, 0x2b, 0x0f, 0x73, 0x9c,
-	0x9a, 0x46, 0xb2, 0xc8, 0xa3, 0x91, 0xa9, 0x5b, 0x44, 0xf8, 0x11, 0xdc, 0xaf, 0x0e, 0x58, 0xa3,
-	0x3d, 0x85, 0x3e, 0xab, 0xa2, 0x4b, 0xd4, 0xd3, 0x32, 0x55, 0xd7, 0xfb, 0x87, 0x60, 0x5f, 0x24,
-	0x41, 0xfb, 0x87, 0x01, 0x8e, 0x06, 0x31, 0x0f, 0xc7, 0x58, 0x7c, 0x86, 0x1f, 0xc0, 0x5d, 0x9c,
-	0xc8, 0x29, 0x0d, 0x25, 0x73, 0x55, 0x86, 0xa6, 0x91, 0xde, 0xb0, 0xfe, 0x93, 0xbf, 0xbf, 0x1f,
-	0xb5, 0x77, 0x3d, 0x1a, 0x34, 0xe0, 0x21, 0x61, 0x69, 0x2a, 0xc3, 0x8d, 0xee, 0x52, 0x2a, 0x84,
-	0xce, 0xe8, 0x96, 0x54, 0x68, 0x35, 0x95, 0x0b, 0xe5, 0xda, 0x91, 0xca, 0x16, 0x31, 0x3f, 0x44,
-	0xdf, 0xfc, 0xb9, 0xb4, 0x8c, 0xeb, 0xa5, 0x65, 0xfc, 0x59, 0x5a, 0xc6, 0xb7, 0x95, 0x55, 0xbb,
-	0x5e, 0x59, 0xb5, 0x5f, 0x2b, 0xab, 0x76, 0x75, 0x4b, 0x3d, 0xc9, 0xde, 0xbf, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0x05, 0xf4, 0x1c, 0xf6, 0xd4, 0x04, 0x00, 0x00,
+	// 637 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x94, 0xcb, 0x6e, 0xd4, 0x3e,
+	0x14, 0xc6, 0x27, 0xbd, 0xfc, 0xff, 0x95, 0xdb, 0x52, 0xd5, 0xad, 0x4a, 0x3a, 0x85, 0xb4, 0x74,
+	0x81, 0x2a, 0x21, 0x1c, 0xd1, 0x6e, 0x00, 0xb1, 0x80, 0xe9, 0x45, 0xb0, 0x00, 0xa4, 0x4c, 0x67,
+	0x4b, 0xe4, 0xc6, 0x27, 0x19, 0x8b, 0x49, 0x1c, 0xc5, 0x4e, 0x19, 0xde, 0x82, 0xb7, 0xe0, 0x3d,
+	0x58, 0x75, 0x59, 0x76, 0xac, 0x2a, 0xd4, 0xbe, 0x01, 0x4b, 0x56, 0x28, 0xce, 0x65, 0x92, 0xd1,
+	0x4c, 0xc5, 0x9a, 0x5d, 0x7c, 0xbe, 0xef, 0xfc, 0x9c, 0x1c, 0x7f, 0x31, 0xda, 0xf2, 0x42, 0x66,
+	0x7b, 0xa9, 0x54, 0x22, 0x64, 0x36, 0x8d, 0x63, 0xdb, 0x13, 0x0c, 0x3c, 0x12, 0x27, 0x42, 0x09,
+	0xfc, 0x7f, 0x21, 0xb4, 0x49, 0xc0, 0x55, 0x3f, 0x3d, 0x23, 0x9e, 0x08, 0x6d, 0x2e, 0xce, 0x1f,
+	0x8b, 0x08, 0xec, 0x4f, 0x40, 0xcf, 0xc1, 0x0e, 0x79, 0x90, 0x50, 0xc5, 0x45, 0x54, 0x6f, 0x6c,
+	0x3f, 0x9a, 0xea, 0x1f, 0xda, 0x1e, 0x95, 0xfd, 0x86, 0xd9, 0xbe, 0xc5, 0x1c, 0xa6, 0x03, 0xc5,
+	0x25, 0x0f, 0xfe, 0x9a, 0x2e, 0x79, 0x20, 0x1b, 0xe6, 0x27, 0xb7, 0x98, 0xcf, 0xe9, 0x80, 0x33,
+	0xaa, 0x44, 0xd2, 0x6c, 0x59, 0x0f, 0x44, 0x20, 0xf4, 0xa3, 0x9d, 0x3d, 0x95, 0xd5, 0x61, 0x31,
+	0xa7, 0xba, 0x77, 0xf7, 0xd7, 0x3c, 0x9a, 0x39, 0x1d, 0xe2, 0x07, 0x68, 0xce, 0x07, 0x90, 0xa6,
+	0xb1, 0x63, 0xec, 0x2d, 0xee, 0x2f, 0x93, 0xec, 0x23, 0xc9, 0x09, 0xc0, 0x9b, 0xc8, 0x17, 0x8e,
+	0x96, 0xf0, 0x3e, 0x42, 0x92, 0x07, 0x11, 0x55, 0x69, 0x02, 0xd2, 0x9c, 0xd9, 0x99, 0xdd, 0x5b,
+	0xdc, 0xc7, 0x24, 0x7b, 0x5f, 0xd2, 0x55, 0xac, 0x5b, 0x4a, 0x4e, 0xcd, 0x85, 0xdb, 0x68, 0xa1,
+	0x9c, 0x80, 0x39, 0xb7, 0x33, 0xbb, 0xb7, 0xe4, 0x54, 0x6b, 0x7c, 0x80, 0x96, 0xb3, 0x5d, 0x5c,
+	0x09, 0x11, 0x73, 0x43, 0x19, 0x98, 0x07, 0xf5, 0xbd, 0xbb, 0x10, 0xb1, 0xb7, 0x32, 0x78, 0xdd,
+	0x72, 0x16, 0xb3, 0x75, 0xb1, 0xc4, 0xc7, 0x68, 0xad, 0x04, 0xb8, 0x5e, 0x02, 0x54, 0x81, 0x6e,
+	0x7d, 0xaa, 0x5b, 0xd7, 0x48, 0xa9, 0x91, 0x43, 0xad, 0xe5, 0x80, 0xd5, 0xb2, 0x5a, 0x15, 0x1b,
+	0x98, 0x34, 0x66, 0x25, 0xe6, 0xd9, 0x38, 0xa6, 0xa7, 0xb5, 0x31, 0x4c, 0x55, 0xc4, 0x3d, 0xb4,
+	0x39, 0x3a, 0x02, 0x97, 0xc6, 0xf1, 0xe0, 0xb3, 0xcb, 0xb8, 0xef, 0x6b, 0xd8, 0x73, 0x0d, 0x33,
+	0xc9, 0xc8, 0x41, 0x5e, 0x65, 0x8e, 0x23, 0xee, 0xfb, 0x39, 0x71, 0x63, 0x24, 0xd5, 0x15, 0x7c,
+	0x82, 0x56, 0x61, 0x08, 0x5e, 0xaa, 0xc0, 0x3d, 0xa3, 0xca, 0xeb, 0x6b, 0xdc, 0x8b, 0x02, 0x57,
+	0x44, 0x9a, 0x1c, 0xe7, 0x8e, 0x4e, 0x66, 0xc8, 0x71, 0x2b, 0xd0, 0x2c, 0xe1, 0x0f, 0xe8, 0x5e,
+	0x15, 0x6f, 0x37, 0x8d, 0x83, 0x84, 0x32, 0x70, 0xa5, 0xd7, 0x87, 0x90, 0x6a, 0xe4, 0xb1, 0x46,
+	0x6e, 0x91, 0xca, 0x44, 0x7a, 0xb9, 0xa9, 0xab, 0x3d, 0x39, 0x75, 0xb3, 0x52, 0xc7, 0x45, 0xec,
+	0xa2, 0xfb, 0xf9, 0xdb, 0x94, 0x47, 0xa1, 0x78, 0x08, 0xcc, 0x95, 0xaa, 0x9c, 0x27, 0x2b, 0x36,
+	0xc8, 0x5d, 0xc5, 0xa1, 0x9c, 0x66, 0xa6, 0xae, 0xaa, 0xe6, 0xba, 0x99, 0xab, 0x13, 0x44, 0xfc,
+	0x1e, 0xdd, 0x6d, 0x6e, 0x30, 0x42, 0xfb, 0x1a, 0xbd, 0xd1, 0x44, 0xd7, 0xa8, 0xeb, 0x75, 0x6a,
+	0x59, 0xef, 0xcc, 0xa3, 0x59, 0x99, 0x86, 0xbb, 0x5f, 0x67, 0xd0, 0xca, 0xd8, 0xfc, 0xf0, 0x4b,
+	0xb4, 0x10, 0x82, 0x94, 0x34, 0xd0, 0x7f, 0x41, 0x16, 0x6e, 0x6b, 0xda, 0xac, 0x49, 0x2f, 0xe2,
+	0x22, 0xea, 0xcc, 0x5d, 0x5c, 0x6d, 0xb7, 0x9c, 0xaa, 0xab, 0xfd, 0xdd, 0x40, 0xf3, 0x5a, 0xf9,
+	0x07, 0xa2, 0x5d, 0x4e, 0xea, 0x9b, 0x81, 0x16, 0x0e, 0x13, 0x11, 0x9d, 0x52, 0xf9, 0x11, 0xbf,
+	0x43, 0x77, 0x68, 0xaa, 0xfa, 0x10, 0x29, 0xee, 0xe9, 0xd4, 0xea, 0x41, 0x2d, 0x75, 0x1e, 0xfe,
+	0xbe, 0xda, 0xde, 0x9d, 0x76, 0x4d, 0x91, 0x43, 0x11, 0x31, 0x9e, 0xe5, 0xc7, 0x19, 0xeb, 0xae,
+	0xe5, 0x87, 0xc1, 0x00, 0x26, 0xe4, 0x07, 0x9a, 0xf9, 0x39, 0xd2, 0xae, 0x29, 0xf9, 0x99, 0x20,
+	0x16, 0x1f, 0xd1, 0x31, 0x2f, 0xae, 0x2d, 0xe3, 0xf2, 0xda, 0x32, 0x7e, 0x5e, 0x5b, 0xc6, 0x97,
+	0x1b, 0xab, 0x75, 0x79, 0x63, 0xb5, 0x7e, 0xdc, 0x58, 0xad, 0xb3, 0xff, 0xf4, 0x25, 0x78, 0xf0,
+	0x27, 0x00, 0x00, 0xff, 0xff, 0xac, 0x1c, 0xc1, 0x0c, 0x46, 0x06, 0x00, 0x00,
 }
 
 func (m *Tx) Marshal() (dAtA []byte, err error) {
@@ -683,6 +950,22 @@ func (m *Tx_ValidatorsApplyDiffMsg) MarshalTo(dAtA []byte) (int, error) {
 	}
 	return i, nil
 }
+func (m *Tx_ExecuteBatchMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.ExecuteBatchMsg != nil {
+		dAtA[i] = 0xe2
+		i++
+		dAtA[i] = 0x3
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.ExecuteBatchMsg.Size()))
+		n7, err := m.ExecuteBatchMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n7
+	}
+	return i, nil
+}
 func (m *Tx_MigrationUpgradeSchemaMsg) MarshalTo(dAtA []byte) (int, error) {
 	i := 0
 	if m.MigrationUpgradeSchemaMsg != nil {
@@ -691,11 +974,11 @@ func (m *Tx_MigrationUpgradeSchemaMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x4
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.MigrationUpgradeSchemaMsg.Size()))
-		n7, err := m.MigrationUpgradeSchemaMsg.MarshalTo(dAtA[i:])
+		n8, err := m.MigrationUpgradeSchemaMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n7
+		i += n8
 	}
 	return i, nil
 }
@@ -707,11 +990,11 @@ func (m *Tx_CustomCreateTimedStateMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x6
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.CustomCreateTimedStateMsg.Size()))
-		n8, err := m.CustomCreateTimedStateMsg.MarshalTo(dAtA[i:])
+		n9, err := m.CustomCreateTimedStateMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n8
+		i += n9
 	}
 	return i, nil
 }
@@ -723,11 +1006,114 @@ func (m *Tx_CustomCreateStateMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x6
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.CustomCreateStateMsg.Size()))
-		n9, err := m.CustomCreateStateMsg.MarshalTo(dAtA[i:])
+		n10, err := m.CustomCreateStateMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n9
+		i += n10
+	}
+	return i, nil
+}
+func (m *ExecuteBatchMsg) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ExecuteBatchMsg) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Messages) > 0 {
+		for _, msg := range m.Messages {
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintCodec(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func (m *ExecuteBatchMsg_Union) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ExecuteBatchMsg_Union) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Sum != nil {
+		nn11, err := m.Sum.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += nn11
+	}
+	return i, nil
+}
+
+func (m *ExecuteBatchMsg_Union_CashSendMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.CashSendMsg != nil {
+		dAtA[i] = 0x9a
+		i++
+		dAtA[i] = 0x3
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.CashSendMsg.Size()))
+		n12, err := m.CashSendMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n12
+	}
+	return i, nil
+}
+func (m *ExecuteBatchMsg_Union_MultisigCreateMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.MultisigCreateMsg != nil {
+		dAtA[i] = 0xc2
+		i++
+		dAtA[i] = 0x3
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.MultisigCreateMsg.Size()))
+		n13, err := m.MultisigCreateMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n13
+	}
+	return i, nil
+}
+func (m *ExecuteBatchMsg_Union_MultisigUpdateMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.MultisigUpdateMsg != nil {
+		dAtA[i] = 0xca
+		i++
+		dAtA[i] = 0x3
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.MultisigUpdateMsg.Size()))
+		n14, err := m.MultisigUpdateMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n14
 	}
 	return i, nil
 }
@@ -755,11 +1141,11 @@ func (m *CronTask) MarshalTo(dAtA []byte) (int, error) {
 		}
 	}
 	if m.Sum != nil {
-		nn10, err := m.Sum.MarshalTo(dAtA[i:])
+		nn15, err := m.Sum.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += nn10
+		i += nn15
 	}
 	return i, nil
 }
@@ -772,11 +1158,11 @@ func (m *CronTask_CustomDeleteTimedStateMsg) MarshalTo(dAtA []byte) (int, error)
 		dAtA[i] = 0x6
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.CustomDeleteTimedStateMsg.Size()))
-		n11, err := m.CustomDeleteTimedStateMsg.MarshalTo(dAtA[i:])
+		n16, err := m.CustomDeleteTimedStateMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n11
+		i += n16
 	}
 	return i, nil
 }
@@ -865,6 +1251,18 @@ func (m *Tx_ValidatorsApplyDiffMsg) Size() (n int) {
 	}
 	return n
 }
+func (m *Tx_ExecuteBatchMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ExecuteBatchMsg != nil {
+		l = m.ExecuteBatchMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
 func (m *Tx_MigrationUpgradeSchemaMsg) Size() (n int) {
 	if m == nil {
 		return 0
@@ -897,6 +1295,69 @@ func (m *Tx_CustomCreateStateMsg) Size() (n int) {
 	_ = l
 	if m.CustomCreateStateMsg != nil {
 		l = m.CustomCreateStateMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *ExecuteBatchMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Messages) > 0 {
+		for _, e := range m.Messages {
+			l = e.Size()
+			n += 1 + l + sovCodec(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ExecuteBatchMsg_Union) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Sum != nil {
+		n += m.Sum.Size()
+	}
+	return n
+}
+
+func (m *ExecuteBatchMsg_Union_CashSendMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.CashSendMsg != nil {
+		l = m.CashSendMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *ExecuteBatchMsg_Union_MultisigCreateMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.MultisigCreateMsg != nil {
+		l = m.MultisigCreateMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *ExecuteBatchMsg_Union_MultisigUpdateMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.MultisigUpdateMsg != nil {
+		l = m.MultisigUpdateMsg.Size()
 		n += 2 + l + sovCodec(uint64(l))
 	}
 	return n
@@ -1216,6 +1677,41 @@ func (m *Tx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sum = &Tx_ValidatorsApplyDiffMsg{v}
 			iNdEx = postIndex
+		case 60:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExecuteBatchMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &ExecuteBatchMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &Tx_ExecuteBatchMsg{v}
+			iNdEx = postIndex
 		case 69:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MigrationUpgradeSchemaMsg", wireType)
@@ -1320,6 +1816,251 @@ func (m *Tx) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			m.Sum = &Tx_CustomCreateStateMsg{v}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ExecuteBatchMsg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ExecuteBatchMsg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ExecuteBatchMsg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Messages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Messages = append(m.Messages, ExecuteBatchMsg_Union{})
+			if err := m.Messages[len(m.Messages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ExecuteBatchMsg_Union) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Union: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Union: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 51:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CashSendMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &cash.SendMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &ExecuteBatchMsg_Union_CashSendMsg{v}
+			iNdEx = postIndex
+		case 56:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MultisigCreateMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &multisig.CreateMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &ExecuteBatchMsg_Union_MultisigCreateMsg{v}
+			iNdEx = postIndex
+		case 57:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MultisigUpdateMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &multisig.UpdateMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &ExecuteBatchMsg_Union_MultisigUpdateMsg{v}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

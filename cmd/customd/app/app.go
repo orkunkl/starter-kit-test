@@ -14,6 +14,7 @@ import (
 	"github.com/iov-one/weave/orm"
 	"github.com/iov-one/weave/store/iavl"
 	"github.com/iov-one/weave/x"
+	"github.com/iov-one/weave/x/batch"
 	"github.com/iov-one/weave/x/cash"
 	"github.com/iov-one/weave/x/cron"
 	"github.com/iov-one/weave/x/multisig"
@@ -46,6 +47,7 @@ func Chain(authFn x.Authenticator, minFee coin.Coin) app.Decorators {
 		sigs.NewDecorator(),
 		multisig.NewDecorator(authFn),
 		cash.NewFeeDecorator(authFn, CashControl()),
+		batch.NewDecorator(),
 		utils.NewSavepoint().OnDeliver(),
 	)
 }
