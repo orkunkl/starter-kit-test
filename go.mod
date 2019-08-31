@@ -11,3 +11,5 @@ require (
 	golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f
 	google.golang.org/genproto v0.0.0-20181016170114-94acd270e44e // indirect
 )
+
+replace github.com/iov-one/weave-starter-kit => github.com/orkunkl/starter-kit v0.0.1
