@@ -61,8 +61,6 @@ github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/hpcloud/tail v1.0.0 h1:nfCOvKYfkgYP8hkirhJocXT2+zOD8yUNjXaWfTlyFKI=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
-github.com/iov-one/weave v0.20.0 h1:1U3++iLSH8OsO831Eg9RxK8V9kb4evCiJfx6Zx1Mgks=
-github.com/iov-one/weave v0.20.0/go.mod h1:UHTNgR+0l5fysQKeAIzcKApuv5RMeVgqo+oL8VVXwvo=
 github.com/iov-one/weave v0.21.0 h1:BkFdJP14c8ihquYCweerh3zSc6FRTFutADLjKLLhHmI=
 github.com/iov-one/weave v0.21.0/go.mod h1:zVUS8DL28dwHRPYNQDiIydJ8j0/uB5Sb1LOeAzNVLQ4=
 github.com/jessevdk/go-flags v0.0.0-20141203071132-1679536dcc89/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
@@ -83,6 +81,7 @@ github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czP
 github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx/RkqARlsWZ6pIwiU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
+github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077 h1:A804awGqaW7i61y8KnbtHmh3scqbNuTJqcycq3u5ZAU=
 github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077/go.mod h1:sZZi9x5aHXGZ/RRp7Ne5rkvtDxZb7pd7vgVA+gmE35A=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
@@ -116,7 +115,6 @@ github.com/rs/cors v1.6.0 h1:G9tHG9lebljV9mfp9SNPDL36nCDxmo3zTlAf1YgvzmI=
 github.com/rs/cors v1.6.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
-github.com/stellar/go v0.0.0-20190524153138-e5e03dc34e2d/go.mod h1:Kkro8X6IWn/5XtSicGd6N2LZKMKUCWS5wS5Ctjh6+Vw=
 github.com/stellar/go v0.0.0-20190723221356-14eed5a46caf h1:gLIFkwCtIquj9iFCPy595EFSmgJbQIZMLAG6gFHcNrI=
 github.com/stellar/go v0.0.0-20190723221356-14eed5a46caf/go.mod h1:Kkro8X6IWn/5XtSicGd6N2LZKMKUCWS5wS5Ctjh6+Vw=
 github.com/stellar/go-xdr v0.0.0-20180917104419-0bc96f33a18e h1:n/hfey8pO+RYMoGXyvyzuw5pdO8IFDoyAL/g5OiCesY=
