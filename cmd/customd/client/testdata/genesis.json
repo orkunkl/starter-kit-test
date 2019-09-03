@@ -39,6 +39,17 @@
             "ticker": "CSTM"
           }
         ]
+      },
+      {
+        "address": "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0",
+        "//name": "third",
+        "coins": [
+          {
+            "whole": 987654321,
+            "fractional": 5555555,
+            "ticker": "CSTM"
+          }
+        ]
       }
     ],
     "currencies": [

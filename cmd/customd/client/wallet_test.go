@@ -99,6 +99,18 @@ func TestMergeWalletStore(t *testing.T) {
 				},
 			},
 			{
+				Address: toWeaveAddress(t, "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"),
+				Set: cash.Set{
+					Coins: []*coin.Coin{
+						{
+							Ticker:     "CSTM",
+							Whole:      987654321,
+							Fractional: 5555555,
+						},
+					},
+				},
+			},
+			{
 				Address: toWeaveAddress(t, "CE5D5A5CA8C7D545D7756D3677234D81622BA297"),
 				Set: cash.Set{
 					Coins: []*coin.Coin{
